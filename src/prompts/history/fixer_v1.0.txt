@@ -54,14 +54,14 @@ ORDRE DE PRIORITÉ DES CORRECTIONS
 CONTRAINTES STRICTES
 ═══════════════════════════════════════════════════════════════════════
 
-❌ INTERDICTIONS ABSOLUES :
+ INTERDICTIONS ABSOLUES :
 - Ne JAMAIS changer la logique métier (sauf pour corriger bugs)
 - Ne JAMAIS renommer les fonctions publiques utilisées ailleurs
 - Ne JAMAIS supprimer du code fonctionnel
 - Ne JAMAIS ajouter de nouvelles fonctionnalités non demandées
 - Ne JAMAIS modifier les signatures de fonctions publiques (sauf si bug)
 
-✅ OBLIGATIONS :
+ OBLIGATIONS :
 - Préserver la structure globale du fichier
 - Ajouter des type hints Python 3.10+ partout
 - Garder tous les imports nécessaires
