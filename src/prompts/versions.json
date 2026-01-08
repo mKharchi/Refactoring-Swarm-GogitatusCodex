@@ -1,0 +1,35 @@
+{
+    "auditor": {
+      "current": "v1.0",
+      "versions": [
+        {
+          "version": "v1.0",
+          "date": "2026-01-07",
+          "description": "Version initiale - Format JSON strict avec validation bugs/PEP8/doc/naming",
+          "auteur": "Djalel"
+        }
+      ]
+    },
+    "fixer": {
+      "current": "v1.0",
+      "versions": [
+        {
+          "version": "v1.0",
+          "date": "2026-01-07",
+          "description": "Version initiale - Correction avec priorités (bugs > doc > PEP8)",
+          "auteur": "Djalel"
+        }
+      ]
+    },
+    "judge": {
+      "current": "v1.0",
+      "versions": [
+        {
+          "version": "v1.0",
+          "date": "2026-01-07",
+          "description": "Version initiale - Décision basée sur tests + score Pylint",
+          "auteur": "Djalel"
+        }
+      ]
+    }
+  }
