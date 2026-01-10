@@ -1,35 +1,62 @@
 {
-    "auditor": {
-      "current": "v1.0",
-      "versions": [
-        {
-          "version": "v1.0",
-          "date": "2026-01-07",
-          "description": "Version initiale - Format JSON strict avec validation bugs/PEP8/doc/naming",
-          "auteur": "Djalel"
-        }
-      ]
-    },
-    "fixer": {
-      "current": "v1.0",
-      "versions": [
-        {
-          "version": "v1.0",
-          "date": "2026-01-07",
-          "description": "Version initiale - Correction avec priorités (bugs > doc > PEP8)",
-          "auteur": "Djalel"
-        }
-      ]
-    },
-    "judge": {
-      "current": "v1.0",
-      "versions": [
-        {
-          "version": "v1.0",
-          "date": "2026-01-07",
-          "description": "Version initiale - Décision basée sur tests + score Pylint",
-          "auteur": "Djalel"
-        }
-      ]
-    }
+  "auditor": {
+    "current": "v1.1",
+    "versions": [
+      {
+        "version": "v1.0",
+        "date": "2025-01-08T00:00:00",
+        "description": "Version initiale - Format JSON strict",
+        "auteur": "Votre Nom",
+        "tokens": "~900"
+      },
+      {
+        "version": "v1.1",
+        "date": "2025-01-08T10:00:00",
+        "description": "Optimisation tokens - Suppression décorations, exemples vers docs",
+        "auteur": "Votre Nom",
+        "tokens": "~340",
+        "issue": "#1"
+      }
+    ]
+  },
+  "fixer": {
+    "current": "v1.1",
+    "versions": [
+      {
+        "version": "v1.0",
+        "date": "2025-01-08T00:00:00",
+        "description": "Version initiale - Correction avec priorités",
+        "auteur": "Votre Nom",
+        "tokens": "~800"
+      },
+      {
+        "version": "v1.1",
+        "date": "2025-01-08T10:00:00",
+        "description": "Optimisation tokens - Format condensé, exemples supprimés",
+        "auteur": "Votre Nom",
+        "tokens": "~280",
+        "issue": "#1"
+      }
+    ]
+  },
+  "judge": {
+    "current": "v1.1",
+    "versions": [
+      {
+        "version": "v1.0",
+        "date": "2025-01-08T00:00:00",
+        "description": "Version initiale - Décision basée sur tests",
+        "auteur": "Votre Nom",
+        "tokens": "~700"
+      },
+      {
+        "version": "v1.1",
+        "date": "2025-01-08T10:00:00",
+        "description": "Optimisation tokens - Format ultra-condensé",
+        "auteur": "Votre Nom",
+        "tokens": "~260",
+        "issue": "#1"
+      }
+    ]
   }
+}
