@@ -17,6 +17,21 @@ FALLBACK_MODELS = [
     "models/gemini-2.5-pro",
 ]
 
+DEV_MODE = os.getenv('DEV_MODE', 'false').lower() == 'true'
+# Mock response for development mode
+MOCK_AUDIT_RESPONSE = """{
+  "problems": [
+    {
+      "file": "example.py",
+        "line": 10,
+        "type": "bug",
+        "severity": "critical",
+        "description": "There is a null pointer dereference.",
+        "suggestion": "Add a null check before dereferencing the pointer."
+    }
+    ]
+}"""
+
 # Rate limiting
 MAX_RETRIES = 3
 RETRY_DELAY = 60

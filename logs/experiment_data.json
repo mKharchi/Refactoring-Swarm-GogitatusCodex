@@ -72,5 +72,43 @@
             "output_response": ""
         },
         "status": "FAILED"
+    },
+    {
+        "id": "c394acd2-ea16-44ef-8a5e-194f2038facc",
+        "timestamp": "2026-01-10T18:43:44.875635",
+        "agent": "Auditor",
+        "model": "models/gemini-flash-lite-latest",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "error": "Erreur Gemini: 400 API key not valid. Please pass a valid API key. [reason: \"API_KEY_INVALID\"\ndomain: \"googleapis.com\"\nmetadata {\n  key: \"service\"\n  value: \"generativelanguage.googleapis.com\"\n}\n, locale: \"en-US\"\nmessage: \"API key not valid. Please pass a valid API key.\"\n]",
+            "input_prompt": "Failed before prompt creation",
+            "output_response": ""
+        },
+        "status": "FAILED"
+    },
+    {
+        "id": "85e8c8d9-10ef-48a9-a4e9-9f7923381e4c",
+        "timestamp": "2026-01-10T18:44:46.046355",
+        "agent": "Auditor",
+        "model": "MOCK-DEV",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "files_analyzed": [
+                "./sandbox/test_case_1/buggy_code.py"
+            ],
+            "input_prompt": "Tu es un expert Python senior en analyse de code.\n\nMISSION: Analyser du code Python et identifier les problèmes de qualité.\n\nTYPES DE PROBLÈMES:\n1. BUGS: Division par zéro, variables non définies, erreurs de types, exceptions non gérées\n2. PEP8: Nommage incorrect, lignes >79 car, imports désorganisés, espaces manquants\n3. DOCUMENTATION: Fonctions sans docstring, format non-Google Style\n4. NAMING: Variables à une lettre, noms non descriptifs\n\nFORMAT SORTIE (STRICT):\nJSON uniquement, pas de texte, pas de markdown.\n\n{\n  \"score_qualite\": <0-10>,\n  \"problemes\": [\n    {\n      \"fichier\": \"nom.py\",\n      \"ligne\": <int>,\n      \"type\": \"bug|pep8|documentation|naming\",\n      \"severite\": \"critique|majeur|mineur\",\n      \"description\": \"<max 80 car>\",\n      \"suggestion\": \"<max 100 car>\"\n    }\n  ],\n  \"resume\": \"<max 150 car>\"\n}\n\nRÈGLES ANTI-HALLUCINATION:\n- Ne jamais inventer de problèmes inexistants\n- Vérifier chaque numéro de ligne\n- Être factuel et précis\n- Si aucun problème: {\"score_qualite\": 10, \"problemes\": [], \"resume\": \"Code conforme\"}\n\nCRITÈRES SCORE:\n10: Parfait | 8-9: Mineurs | 6-7: PEP8/doc | 4-5: Bugs mineurs | 0-3: Bugs critiques\n\nPRIORITÉ: bugs > documentation > pep8 > naming\n\nFICHIER: ./sandbox/test_case_1/buggy_code.py\nSCORE PYLINT: 5.0/10\n\nCODE:\n```python\n\n\n# Fichier: ./sandbox/test_case_1/buggy_code.py\ndef calculate(a,b):\n    result=a+b\n    return result\n\n\n```\n\nAnalyse et produis ton rapport JSON.",
+            "output_response": "{\n  \"problems\": [\n    {\n      \"file\": \"example.py\",\n        \"line\": 10,\n        \"type\": \"bug\",\n        \"severity\": \"critical\",\n        \"description\": \"There is a null pointer dereference.\",\n        \"suggestion\": \"Add a null check before dereferencing the pointer.\"\n    }\n    ]\n}",
+            "pylint_scores": [
+                {
+                    "file": "./sandbox/test_case_1/buggy_code.py",
+                    "score": 5.0,
+                    "issues": 1
+                }
+            ],
+            "code_length": 103,
+            "dev_mode": true,
+            "used_prompt_builder": true
+        },
+        "status": "SUCCESS"
     }
 ]
