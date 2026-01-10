@@ -1,0 +1,62 @@
+{
+  "auditor": {
+    "current": "v1.1",
+    "versions": [
+      {
+        "version": "v1.0",
+        "date": "2026-01-07",
+        "description": "Version initiale - Format JSON strict",
+        "auteur": "Djalel The prompt engineer",
+        "tokens": "~900"
+      },
+      {
+        "version": "v1.1",
+        "date": "2026-01-10",
+        "description": "Optimisation tokens - Suppression décorations, exemples vers docs",
+        "auteur": "Djalel The prompt engineer",
+        "tokens": "~340",
+        "issue": "#1"
+      }
+    ]
+  },
+  "fixer": {
+    "current": "v1.1",
+    "versions": [
+      {
+        "version": "v1.0",
+        "date": "2026-01-07",
+        "description": "Version initiale - Correction avec priorités",
+        "auteur": "Djalel The prompt engineer",
+        "tokens": "~800"
+      },
+      {
+        "version": "v1.1",
+        "date": "2026-01-10",
+        "description": "Optimisation tokens - Format condensé, exemples supprimés",
+        "auteur": "Djalel The prompt engineer",
+        "tokens": "~280",
+        "issue": "#1"
+      }
+    ]
+  },
+  "judge": {
+    "current": "v1.1",
+    "versions": [
+      {
+        "version": "v1.0",
+        "date": "2026-01-07",
+        "description": "Version initiale - Décision basée sur tests",
+        "auteur": "Djalel The prompt engineer",
+        "tokens": "~700"
+      },
+      {
+        "version": "v1.1",
+        "date": "2026-01-10",
+        "description": "Optimisation tokens - Format ultra-condensé",
+        "auteur": "Djalel The prompt engineer",
+        "tokens": "~260",
+        "issue": "#1"
+      }
+    ]
+  }
+}

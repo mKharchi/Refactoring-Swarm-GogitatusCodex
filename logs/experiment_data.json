@@ -1,11 +1,114 @@
 [
-  {
-    "id": "9e82e9b0-9b43-4a78-af43-d5d5ef848a2f",
-    "timestamp": "2025-12-26T01:26:41.177789",
-    "agent": "System",
-    "model": "unknown",
-    "action": "STARTUP",
-    "details": "Target: ./sandbox",
-    "status": "INFO"
-  }
+    {
+        "id": "9e82e9b0-9b43-4a78-af43-d5d5ef848a2f",
+        "timestamp": "2025-12-26T01:26:41.177789",
+        "agent": "System",
+        "model": "unknown",
+        "action": "STARTUP",
+        "details": "Target: ./sandbox",
+        "status": "INFO"
+    },
+    {
+        "id": "17bffb64-3360-4b6f-91b3-e0cd69877c0c",
+        "timestamp": "2026-01-08T08:07:05.513184",
+        "agent": "Auditor",
+        "model": "gemini-2.0-flash-exp",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "error": "429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.0-flash-exp\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash-exp\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash-exp\nPlease retry in 54.558570859s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_input_token_count\"\n  quota_id: \"GenerateContentInputTokensPerModelPerMinute-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.0-flash-exp\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n}\nviolations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerMinutePerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.0-flash-exp\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n}\nviolations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.0-flash-exp\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n}\n, retry_delay {\n  seconds: 54\n}\n]",
+            "input_prompt": "Failed before prompt creation",
+            "output_response": ""
+        },
+        "status": "FAILED"
+    },
+    {
+        "id": "ba7edbc1-f6bf-4164-b01b-862f6c4f7f84",
+        "timestamp": "2026-01-08T08:09:54.130142",
+        "agent": "Auditor",
+        "model": "gemini-1.5-flash",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "error": "404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.",
+            "input_prompt": "Failed before prompt creation",
+            "output_response": ""
+        },
+        "status": "FAILED"
+    },
+    {
+        "id": "e94a24a1-3585-43b2-8c91-3058a5f9573b",
+        "timestamp": "2026-01-08T08:15:31.402112",
+        "agent": "Auditor",
+        "model": "models/gemini-2.5-flash",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "error": "429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. ",
+            "input_prompt": "Failed before prompt creation",
+            "output_response": ""
+        },
+        "status": "FAILED"
+    },
+    {
+        "id": "57f767da-f4b9-4b5a-b30a-62fcab71440f",
+        "timestamp": "2026-01-08T08:15:54.122250",
+        "agent": "Auditor",
+        "model": "models/gemini-2.0-flash",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "error": "429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. ",
+            "input_prompt": "Failed before prompt creation",
+            "output_response": ""
+        },
+        "status": "FAILED"
+    },
+    {
+        "id": "cfde2acb-81d0-46a8-8e2a-0c17bad37d9a",
+        "timestamp": "2026-01-08T08:16:57.056357",
+        "agent": "Auditor",
+        "model": "models/gemini-flash-lite-latest",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "error": "429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. ",
+            "input_prompt": "Failed before prompt creation",
+            "output_response": ""
+        },
+        "status": "FAILED"
+    },
+    {
+        "id": "c394acd2-ea16-44ef-8a5e-194f2038facc",
+        "timestamp": "2026-01-10T18:43:44.875635",
+        "agent": "Auditor",
+        "model": "models/gemini-flash-lite-latest",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "error": "Erreur Gemini: 400 API key not valid. Please pass a valid API key. [reason: \"API_KEY_INVALID\"\ndomain: \"googleapis.com\"\nmetadata {\n  key: \"service\"\n  value: \"generativelanguage.googleapis.com\"\n}\n, locale: \"en-US\"\nmessage: \"API key not valid. Please pass a valid API key.\"\n]",
+            "input_prompt": "Failed before prompt creation",
+            "output_response": ""
+        },
+        "status": "FAILED"
+    },
+    {
+        "id": "85e8c8d9-10ef-48a9-a4e9-9f7923381e4c",
+        "timestamp": "2026-01-10T18:44:46.046355",
+        "agent": "Auditor",
+        "model": "MOCK-DEV",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "files_analyzed": [
+                "./sandbox/test_case_1/buggy_code.py"
+            ],
+            "input_prompt": "Tu es un expert Python senior en analyse de code.\n\nMISSION: Analyser du code Python et identifier les problèmes de qualité.\n\nTYPES DE PROBLÈMES:\n1. BUGS: Division par zéro, variables non définies, erreurs de types, exceptions non gérées\n2. PEP8: Nommage incorrect, lignes >79 car, imports désorganisés, espaces manquants\n3. DOCUMENTATION: Fonctions sans docstring, format non-Google Style\n4. NAMING: Variables à une lettre, noms non descriptifs\n\nFORMAT SORTIE (STRICT):\nJSON uniquement, pas de texte, pas de markdown.\n\n{\n  \"score_qualite\": <0-10>,\n  \"problemes\": [\n    {\n      \"fichier\": \"nom.py\",\n      \"ligne\": <int>,\n      \"type\": \"bug|pep8|documentation|naming\",\n      \"severite\": \"critique|majeur|mineur\",\n      \"description\": \"<max 80 car>\",\n      \"suggestion\": \"<max 100 car>\"\n    }\n  ],\n  \"resume\": \"<max 150 car>\"\n}\n\nRÈGLES ANTI-HALLUCINATION:\n- Ne jamais inventer de problèmes inexistants\n- Vérifier chaque numéro de ligne\n- Être factuel et précis\n- Si aucun problème: {\"score_qualite\": 10, \"problemes\": [], \"resume\": \"Code conforme\"}\n\nCRITÈRES SCORE:\n10: Parfait | 8-9: Mineurs | 6-7: PEP8/doc | 4-5: Bugs mineurs | 0-3: Bugs critiques\n\nPRIORITÉ: bugs > documentation > pep8 > naming\n\nFICHIER: ./sandbox/test_case_1/buggy_code.py\nSCORE PYLINT: 5.0/10\n\nCODE:\n```python\n\n\n# Fichier: ./sandbox/test_case_1/buggy_code.py\ndef calculate(a,b):\n    result=a+b\n    return result\n\n\n```\n\nAnalyse et produis ton rapport JSON.",
+            "output_response": "{\n  \"problems\": [\n    {\n      \"file\": \"example.py\",\n        \"line\": 10,\n        \"type\": \"bug\",\n        \"severity\": \"critical\",\n        \"description\": \"There is a null pointer dereference.\",\n        \"suggestion\": \"Add a null check before dereferencing the pointer.\"\n    }\n    ]\n}",
+            "pylint_scores": [
+                {
+                    "file": "./sandbox/test_case_1/buggy_code.py",
+                    "score": 5.0,
+                    "issues": 1
+                }
+            ],
+            "code_length": 103,
+            "dev_mode": true,
+            "used_prompt_builder": true
+        },
+        "status": "SUCCESS"
+    }
 ]
