@@ -110,5 +110,190 @@
             "used_prompt_builder": true
         },
         "status": "SUCCESS"
+    },
+    {
+        "id": "af12216c-3205-4b02-b732-35bc60aea257",
+        "timestamp": "2026-01-13T18:52:13.116817",
+        "agent": "Auditor",
+        "model": "MOCK-DEV",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "files_analyzed": [
+                "./sandbox/target/test_sample.py",
+                "./sandbox/target/test_file.py",
+                "./sandbox/target/good_code.py"
+            ],
+            "input_prompt": "Tu es un expert Python senior en analyse de code.\n\nMISSION: Analyser du code Python et identifier les problèmes de qualité.\n\nTYPES DE PROBLÈMES:\n1. BUGS: Division par zéro, variables non définies, erreurs de types, exceptions non gérées\n2. PEP8: Nommage incorrect, lignes >79 car, imports désorganisés, espaces manquants\n3. DOCUMENTATION: Fonctions sans docstring, format non-Google Style\n4. NAMING: Variables à une lettre, noms non descriptifs\n\nFORMAT SORTIE (STRICT):\nJSON uniquement, pas de texte, pas de markdown.\n\n{\n  \"score_qualite\": <0-10>,\n  \"problemes\": [\n    {\n      \"fichier\": \"nom.py\",\n      \"ligne\": <int>,\n      \"type\": \"bug|pep8|documentation|naming\",\n      \"severite\": \"critique|majeur|mineur\",\n      \"description\": \"<max 80 car>\",\n      \"suggestion\": \"<max 100 car>\"\n    }\n  ],\n  \"resume\": \"<max 150 car>\"\n}\n\nRÈGLES ANTI-HALLUCINATION:\n- Ne jamais inventer de problèmes inexistants\n- Vérifier chaque numéro de ligne\n- Être factuel et précis\n- Si aucun problème: {\"score_qualite\": 10, \"problemes\": [], \"resume\": \"Code conforme\"}\n\nCRITÈRES SCORE:\n10: Parfait | 8-9: Mineurs | 6-7: PEP8/doc | 4-5: Bugs mineurs | 0-3: Bugs critiques\n\nPRIORITÉ: bugs > documentation > pep8 > naming\n\nFICHIER: ./sandbox/target/test_sample.py\nSCORE PYLINT: 2.5/10\n\nCODE:\n```python\n\n```\n\nAnalyse et produis ton rapport JSON.",
+            "output_response": "{\n  \"problems\": [\n    {\n      \"file\": \"example.py\",\n        \"line\": 10,\n        \"type\": \"bug\",\n        \"severity\": \"critical\",\n        \"description\": \"There is a null pointer dereference.\",\n        \"suggestion\": \"Add a null check before dereferencing the pointer.\"\n    }\n    ]\n}",
+            "pylint_scores": [
+                {
+                    "file": "./sandbox/target/test_sample.py",
+                    "score": 0.0,
+                    "issues": 4
+                },
+                {
+                    "file": "./sandbox/target/test_file.py",
+                    "score": 0.0,
+                    "issues": 2
+                },
+                {
+                    "file": "./sandbox/target/good_code.py",
+                    "score": 7.5,
+                    "issues": 1
+                }
+            ],
+            "code_length": 0,
+            "dev_mode": true,
+            "used_prompt_builder": true
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "57e7368f-0a1a-4734-86c0-3c614a380cd6",
+        "timestamp": "2026-01-13T18:57:49.052344",
+        "agent": "Auditor",
+        "model": "MOCK-DEV",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "files_analyzed": [
+                "test_sample.py",
+                "test_file.py",
+                "good_code.py"
+            ],
+            "input_prompt": "Tu es un expert Python senior en analyse de code.\n\nMISSION: Analyser du code Python et identifier les problèmes de qualité.\n\nTYPES DE PROBLÈMES:\n1. BUGS: Division par zéro, variables non définies, erreurs de types, exceptions non gérées\n2. PEP8: Nommage incorrect, lignes >79 car, imports désorganisés, espaces manquants\n3. DOCUMENTATION: Fonctions sans docstring, format non-Google Style\n4. NAMING: Variables à une lettre, noms non descriptifs\n\nFORMAT SORTIE (STRICT):\nJSON uniquement, pas de texte, pas de markdown.\n\n{\n  \"score_qualite\": <0-10>,\n  \"problemes\": [\n    {\n      \"fichier\": \"nom.py\",\n      \"ligne\": <int>,\n      \"type\": \"bug|pep8|documentation|naming\",\n      \"severite\": \"critique|majeur|mineur\",\n      \"description\": \"<max 80 car>\",\n      \"suggestion\": \"<max 100 car>\"\n    }\n  ],\n  \"resume\": \"<max 150 car>\"\n}\n\nRÈGLES ANTI-HALLUCINATION:\n- Ne jamais inventer de problèmes inexistants\n- Vérifier chaque numéro de ligne\n- Être factuel et précis\n- Si aucun problème: {\"score_qualite\": 10, \"problemes\": [], \"resume\": \"Code conforme\"}\n\nCRITÈRES SCORE:\n10: Parfait | 8-9: Mineurs | 6-7: PEP8/doc | 4-5: Bugs mineurs | 0-3: Bugs critiques\n\nPRIORITÉ: bugs > documentation > pep8 > naming\n\nFICHIER: test_sample.py\nSCORE PYLINT: 0.0/10\n\nCODE:\n```python\n\n\n# Fichier: test_sample.py\n\ndef hello(name):\n    print(f'Hello {name}')\n    \ndef add(a,b):\n    return a+b\n\n\n\n# Fichier: test_file.py\ndef hello():\n    print('world')\n\n\n\n# Fichier: good_code.py\n\ndef add_numbers(num_a: int, num_b: int) -> int:\n    \"\"\"\n    Add two numbers together.\n    \n    Args:\n        num_a: First number\n        num_b: Second number\n        \n    Returns:\n        Sum of the two numbers\n    \"\"\"\n    return num_a + num_b\n\n\ndef multiply(num_a: int, num_b: int) -> int:\n    \"\"\"\n    Multiply two numbers.\n    \n    Args:\n        num_a: First number\n        num_b: Second number\n        \n    Returns:\n        Product of the two numbers\n    \"\"\"\n    return num_a * num_b\n\n\n```\n\nAnalyse et produis ton rapport JSON.",
+            "output_response": "{\n  \"problems\": [\n    {\n      \"file\": \"example.py\",\n        \"line\": 10,\n        \"type\": \"bug\",\n        \"severity\": \"critical\",\n        \"description\": \"There is a null pointer dereference.\",\n        \"suggestion\": \"Add a null check before dereferencing the pointer.\"\n    }\n    ]\n}",
+            "pylint_scores": [
+                {
+                    "file": "test_sample.py",
+                    "score": 0.0,
+                    "issues": 0
+                },
+                {
+                    "file": "test_file.py",
+                    "score": 0.0,
+                    "issues": 0
+                },
+                {
+                    "file": "good_code.py",
+                    "score": 0.0,
+                    "issues": 0
+                }
+            ],
+            "code_length": 682,
+            "dev_mode": true,
+            "used_prompt_builder": true
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "5af56f0b-5095-4c00-96ba-b48c3e56959d",
+        "timestamp": "2026-01-13T18:58:15.926356",
+        "agent": "Auditor",
+        "model": "MOCK-DEV",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "files_analyzed": [
+                "test_sample.py",
+                "test_file.py",
+                "good_code.py"
+            ],
+            "input_prompt": "Tu es un expert Python senior en analyse de code.\n\nMISSION: Analyser du code Python et identifier les problèmes de qualité.\n\nTYPES DE PROBLÈMES:\n1. BUGS: Division par zéro, variables non définies, erreurs de types, exceptions non gérées\n2. PEP8: Nommage incorrect, lignes >79 car, imports désorganisés, espaces manquants\n3. DOCUMENTATION: Fonctions sans docstring, format non-Google Style\n4. NAMING: Variables à une lettre, noms non descriptifs\n\nFORMAT SORTIE (STRICT):\nJSON uniquement, pas de texte, pas de markdown.\n\n{\n  \"score_qualite\": <0-10>,\n  \"problemes\": [\n    {\n      \"fichier\": \"nom.py\",\n      \"ligne\": <int>,\n      \"type\": \"bug|pep8|documentation|naming\",\n      \"severite\": \"critique|majeur|mineur\",\n      \"description\": \"<max 80 car>\",\n      \"suggestion\": \"<max 100 car>\"\n    }\n  ],\n  \"resume\": \"<max 150 car>\"\n}\n\nRÈGLES ANTI-HALLUCINATION:\n- Ne jamais inventer de problèmes inexistants\n- Vérifier chaque numéro de ligne\n- Être factuel et précis\n- Si aucun problème: {\"score_qualite\": 10, \"problemes\": [], \"resume\": \"Code conforme\"}\n\nCRITÈRES SCORE:\n10: Parfait | 8-9: Mineurs | 6-7: PEP8/doc | 4-5: Bugs mineurs | 0-3: Bugs critiques\n\nPRIORITÉ: bugs > documentation > pep8 > naming\n\nFICHIER: test_sample.py\nSCORE PYLINT: 0.0/10\n\nCODE:\n```python\n\n\n# Fichier: test_sample.py\n\ndef hello(name):\n    print(f'Hello {name}')\n    \ndef add(a,b):\n    return a+b\n\n\n\n# Fichier: test_file.py\ndef hello():\n    print('world')\n\n\n\n# Fichier: good_code.py\n\ndef add_numbers(num_a: int, num_b: int) -> int:\n    \"\"\"\n    Add two numbers together.\n    \n    Args:\n        num_a: First number\n        num_b: Second number\n        \n    Returns:\n        Sum of the two numbers\n    \"\"\"\n    return num_a + num_b\n\n\ndef multiply(num_a: int, num_b: int) -> int:\n    \"\"\"\n    Multiply two numbers.\n    \n    Args:\n        num_a: First number\n        num_b: Second number\n        \n    Returns:\n        Product of the two numbers\n    \"\"\"\n    return num_a * num_b\n\n\n```\n\nAnalyse et produis ton rapport JSON.",
+            "output_response": "{\n  \"problems\": [\n    {\n      \"file\": \"example.py\",\n        \"line\": 10,\n        \"type\": \"bug\",\n        \"severity\": \"critical\",\n        \"description\": \"There is a null pointer dereference.\",\n        \"suggestion\": \"Add a null check before dereferencing the pointer.\"\n    }\n    ]\n}",
+            "pylint_scores": [
+                {
+                    "file": "test_sample.py",
+                    "score": 0.0,
+                    "issues": 0
+                },
+                {
+                    "file": "test_file.py",
+                    "score": 0.0,
+                    "issues": 0
+                },
+                {
+                    "file": "good_code.py",
+                    "score": 0.0,
+                    "issues": 0
+                }
+            ],
+            "code_length": 682,
+            "dev_mode": true,
+            "used_prompt_builder": true
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "13475591-3f76-471b-8f7f-5ebd29b3f5ba",
+        "timestamp": "2026-01-13T18:59:44.535022",
+        "agent": "Auditor",
+        "model": "MOCK-DEV",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "files_analyzed": [
+                "test_sample.py",
+                "test_file.py",
+                "good_code.py"
+            ],
+            "input_prompt": "Tu es un expert Python senior en analyse de code.\n\nMISSION: Analyser du code Python et identifier les problèmes de qualité.\n\nTYPES DE PROBLÈMES:\n1. BUGS: Division par zéro, variables non définies, erreurs de types, exceptions non gérées\n2. PEP8: Nommage incorrect, lignes >79 car, imports désorganisés, espaces manquants\n3. DOCUMENTATION: Fonctions sans docstring, format non-Google Style\n4. NAMING: Variables à une lettre, noms non descriptifs\n\nFORMAT SORTIE (STRICT):\nJSON uniquement, pas de texte, pas de markdown.\n\n{\n  \"score_qualite\": <0-10>,\n  \"problemes\": [\n    {\n      \"fichier\": \"nom.py\",\n      \"ligne\": <int>,\n      \"type\": \"bug|pep8|documentation|naming\",\n      \"severite\": \"critique|majeur|mineur\",\n      \"description\": \"<max 80 car>\",\n      \"suggestion\": \"<max 100 car>\"\n    }\n  ],\n  \"resume\": \"<max 150 car>\"\n}\n\nRÈGLES ANTI-HALLUCINATION:\n- Ne jamais inventer de problèmes inexistants\n- Vérifier chaque numéro de ligne\n- Être factuel et précis\n- Si aucun problème: {\"score_qualite\": 10, \"problemes\": [], \"resume\": \"Code conforme\"}\n\nCRITÈRES SCORE:\n10: Parfait | 8-9: Mineurs | 6-7: PEP8/doc | 4-5: Bugs mineurs | 0-3: Bugs critiques\n\nPRIORITÉ: bugs > documentation > pep8 > naming\n\nFICHIER: test_sample.py\nSCORE PYLINT: 0.0/10\n\nCODE:\n```python\n\n\n# Fichier: test_sample.py\n\ndef hello(name):\n    print(f'Hello {name}')\n    \ndef add(a,b):\n    return a+b\n\n\n\n# Fichier: test_file.py\ndef hello():\n    print('world')\n\n\n\n# Fichier: good_code.py\n\ndef add_numbers(num_a: int, num_b: int) -> int:\n    \"\"\"\n    Add two numbers together.\n    \n    Args:\n        num_a: First number\n        num_b: Second number\n        \n    Returns:\n        Sum of the two numbers\n    \"\"\"\n    return num_a + num_b\n\n\ndef multiply(num_a: int, num_b: int) -> int:\n    \"\"\"\n    Multiply two numbers.\n    \n    Args:\n        num_a: First number\n        num_b: Second number\n        \n    Returns:\n        Product of the two numbers\n    \"\"\"\n    return num_a * num_b\n\n\n```\n\nAnalyse et produis ton rapport JSON.",
+            "output_response": "{\n  \"problems\": [\n    {\n      \"file\": \"example.py\",\n        \"line\": 10,\n        \"type\": \"bug\",\n        \"severity\": \"critical\",\n        \"description\": \"There is a null pointer dereference.\",\n        \"suggestion\": \"Add a null check before dereferencing the pointer.\"\n    }\n    ]\n}",
+            "pylint_scores": [
+                {
+                    "file": "test_sample.py",
+                    "score": 0.0,
+                    "issues": 0
+                },
+                {
+                    "file": "test_file.py",
+                    "score": 0.0,
+                    "issues": 0
+                },
+                {
+                    "file": "good_code.py",
+                    "score": 0.0,
+                    "issues": 0
+                }
+            ],
+            "code_length": 682,
+            "dev_mode": true,
+            "used_prompt_builder": true
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "711648df-922b-479d-855a-d263513d1cc1",
+        "timestamp": "2026-01-13T19:00:28.108759",
+        "agent": "Auditor",
+        "model": "MOCK-DEV",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "files_analyzed": [
+                "test_sample.py",
+                "test_file.py",
+                "good_code.py"
+            ],
+            "input_prompt": "Tu es un expert Python senior en analyse de code.\n\nMISSION: Analyser du code Python et identifier les problèmes de qualité.\n\nTYPES DE PROBLÈMES:\n1. BUGS: Division par zéro, variables non définies, erreurs de types, exceptions non gérées\n2. PEP8: Nommage incorrect, lignes >79 car, imports désorganisés, espaces manquants\n3. DOCUMENTATION: Fonctions sans docstring, format non-Google Style\n4. NAMING: Variables à une lettre, noms non descriptifs\n\nFORMAT SORTIE (STRICT):\nJSON uniquement, pas de texte, pas de markdown.\n\n{\n  \"score_qualite\": <0-10>,\n  \"problemes\": [\n    {\n      \"fichier\": \"nom.py\",\n      \"ligne\": <int>,\n      \"type\": \"bug|pep8|documentation|naming\",\n      \"severite\": \"critique|majeur|mineur\",\n      \"description\": \"<max 80 car>\",\n      \"suggestion\": \"<max 100 car>\"\n    }\n  ],\n  \"resume\": \"<max 150 car>\"\n}\n\nRÈGLES ANTI-HALLUCINATION:\n- Ne jamais inventer de problèmes inexistants\n- Vérifier chaque numéro de ligne\n- Être factuel et précis\n- Si aucun problème: {\"score_qualite\": 10, \"problemes\": [], \"resume\": \"Code conforme\"}\n\nCRITÈRES SCORE:\n10: Parfait | 8-9: Mineurs | 6-7: PEP8/doc | 4-5: Bugs mineurs | 0-3: Bugs critiques\n\nPRIORITÉ: bugs > documentation > pep8 > naming\n\nFICHIER: test_sample.py\nSCORE PYLINT: 2.5/10\n\nCODE:\n```python\n\n\n# Fichier: test_sample.py\n\ndef hello(name):\n    print(f'Hello {name}')\n    \ndef add(a,b):\n    return a+b\n\n\n\n# Fichier: test_file.py\ndef hello():\n    print('world')\n\n\n\n# Fichier: good_code.py\n\ndef add_numbers(num_a: int, num_b: int) -> int:\n    \"\"\"\n    Add two numbers together.\n    \n    Args:\n        num_a: First number\n        num_b: Second number\n        \n    Returns:\n        Sum of the two numbers\n    \"\"\"\n    return num_a + num_b\n\n\ndef multiply(num_a: int, num_b: int) -> int:\n    \"\"\"\n    Multiply two numbers.\n    \n    Args:\n        num_a: First number\n        num_b: Second number\n        \n    Returns:\n        Product of the two numbers\n    \"\"\"\n    return num_a * num_b\n\n\n```\n\nAnalyse et produis ton rapport JSON.",
+            "output_response": "{\n  \"problems\": [\n    {\n      \"file\": \"example.py\",\n        \"line\": 10,\n        \"type\": \"bug\",\n        \"severity\": \"critical\",\n        \"description\": \"There is a null pointer dereference.\",\n        \"suggestion\": \"Add a null check before dereferencing the pointer.\"\n    }\n    ]\n}",
+            "pylint_scores": [
+                {
+                    "file": "test_sample.py",
+                    "score": 0.0,
+                    "issues": 4
+                },
+                {
+                    "file": "test_file.py",
+                    "score": 0.0,
+                    "issues": 2
+                },
+                {
+                    "file": "good_code.py",
+                    "score": 7.5,
+                    "issues": 1
+                }
+            ],
+            "code_length": 682,
+            "dev_mode": true,
+            "used_prompt_builder": true
+        },
+        "status": "SUCCESS"
     }
 ]

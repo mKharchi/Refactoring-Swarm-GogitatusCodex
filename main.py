@@ -4,6 +4,7 @@ import os
 from dotenv import load_dotenv
 from typing import Literal
 from langgraph.graph import StateGraph, END
+from pathlib import Path
 
 # Charger les variables d'environnement
 load_dotenv()
@@ -87,7 +88,11 @@ def initialize_state(target_dir: str) -> AgentState:
     for root, dirs, files in os.walk(target_dir):
         for file in files:
             if file.endswith('.py'):
-                python_files.append(os.path.join(root, file))
+                
+                full_path = os.path.join(root, file)
+                rel_path = os.path.relpath(full_path, start=target_dir)                    
+                python_files.append(rel_path)
+                
     
     return {
         "target_dir": target_dir,
