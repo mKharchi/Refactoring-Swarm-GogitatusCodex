@@ -6,7 +6,7 @@ from google.api_core import exceptions
 
 from src.state import AgentState
 from src.utils.logger import log_experiment, ActionType
-from src.tools.mock_tools import read_file, run_pylint
+from src.tools.tool_adapter import read_file, run_pylint
 from src.config import DEFAULT_MODEL, MAX_RETRIES, RETRY_DELAY , DEV_MODE, MOCK_AUDIT_RESPONSE
 # Import the optimized prompt builder
 try:
@@ -70,13 +70,17 @@ def auditor_agent(state: AgentState) -> AgentState:
         pylint_results = []
         
         for filepath in python_files:
-            print(f"📄 Analysing: {filepath}")
-            
+            print(f"📄 Analyzing: {filepath}")
+    
+            # Read file (relative path for file tools)
             code_content = read_file(filepath)
             if code_content:
                 all_code += f"\n\n# Fichier: {filepath}\n{code_content}\n"
             
-            pylint_result = run_pylint(filepath)
+            # Run pylint (needs full path from sandbox root)
+            # Construct full path: sandbox/target/filepath
+            full_path = os.path.join(target_dir, filepath)
+            pylint_result = run_pylint(full_path)
             if pylint_result:
                 pylint_results.append({
                     "file": filepath,
