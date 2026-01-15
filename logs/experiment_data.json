@@ -144,5 +144,276 @@
             ]
         },
         "status": "FAILURE"
+    },
+    {
+        "id": "de31b8ff-139d-4365-adba-02999722c619",
+        "timestamp": "2026-01-15T23:50:43.794960",
+        "agent": "Auditor",
+        "model": "models/gemini-flash-lite-latest",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "error": "Quota épuisé après 3 tentatives",
+            "input_prompt": "Failed before prompt creation",
+            "output_response": ""
+        },
+        "status": "FAILED"
+    },
+    {
+        "id": "7ff33f0f-b7a9-4767-a594-fec2bf6145cf",
+        "timestamp": "2026-01-15T23:50:43.871769",
+        "agent": "Fixer",
+        "model": "models/gemini-flash-lite-latest",
+        "action": "FIX",
+        "details": {
+            "iteration": 0,
+            "input_prompt": "Fix issues found in audit report",
+            "output_response": "['[PLACEHOLDER] Aucun changement appliqué']",
+            "files_to_fix": [
+                "test_datasets/internal\\case1_style.py",
+                "test_datasets/internal\\case2_bugs.py",
+                "test_datasets/internal\\case3_naming.py",
+                "test_datasets/internal\\case4_mixed.py",
+                "test_datasets/internal\\case5_syntax.py",
+                "test_datasets/internal\\test_case1_style.py",
+                "test_datasets/internal\\test_case2_bugs.py",
+                "test_datasets/internal\\test_case3_naming.py",
+                "test_datasets/internal\\test_case4_mixed.py",
+                "test_datasets/internal\\test_case5_syntax.py"
+            ],
+            "audit_report": "None"
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "16457309-b138-4938-bcb3-4bc3e6ee7921",
+        "timestamp": "2026-01-15T23:50:43.977207",
+        "agent": "Judge",
+        "model": "models/gemini-flash-lite-latest",
+        "action": "DEBUG",
+        "details": {
+            "iteration": 1,
+            "input_prompt": "Run tests on fixed code",
+            "output_response": "❌ [SIMULATION] Tests échoués",
+            "test_passed": false,
+            "changes_verified": [
+                "[PLACEHOLDER] Aucun changement appliqué"
+            ]
+        },
+        "status": "FAILURE"
+    },
+    {
+        "id": "5b839fcb-3539-48df-a472-60a41d73972b",
+        "timestamp": "2026-01-15T23:54:10.700844",
+        "agent": "Auditor",
+        "model": "models/gemini-flash-lite-latest",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "error": "Quota épuisé après 3 tentatives",
+            "input_prompt": "Failed before prompt creation",
+            "output_response": ""
+        },
+        "status": "FAILED"
+    },
+    {
+        "id": "0d14d441-95bd-4b03-8df0-e16457afdb1d",
+        "timestamp": "2026-01-15T23:54:10.781674",
+        "agent": "Fixer",
+        "model": "models/gemini-flash-lite-latest",
+        "action": "FIX",
+        "details": {
+            "iteration": 0,
+            "input_prompt": "Fix issues found in audit report",
+            "output_response": "['[PLACEHOLDER] Aucun changement appliqué']",
+            "files_to_fix": [
+                "test_datasets/internal\\case1_style.py",
+                "test_datasets/internal\\case2_bugs.py",
+                "test_datasets/internal\\case3_naming.py",
+                "test_datasets/internal\\case4_mixed.py",
+                "test_datasets/internal\\case5_syntax.py",
+                "test_datasets/internal\\test_case1_style.py",
+                "test_datasets/internal\\test_case2_bugs.py",
+                "test_datasets/internal\\test_case3_naming.py",
+                "test_datasets/internal\\test_case4_mixed.py",
+                "test_datasets/internal\\test_case5_syntax.py"
+            ],
+            "audit_report": "None"
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "f58baf7d-5b8c-495e-a6b6-5c30f774717b",
+        "timestamp": "2026-01-15T23:54:10.915385",
+        "agent": "Judge",
+        "model": "models/gemini-flash-lite-latest",
+        "action": "DEBUG",
+        "details": {
+            "iteration": 1,
+            "input_prompt": "Run tests on fixed code",
+            "output_response": "❌ [SIMULATION] Tests échoués",
+            "test_passed": false,
+            "changes_verified": [
+                "[PLACEHOLDER] Aucun changement appliqué"
+            ]
+        },
+        "status": "FAILURE"
+    },
+    {
+        "id": "82d83fa7-6dee-491f-bb90-336e0b35026c",
+        "timestamp": "2026-01-15T23:58:34.553628",
+        "agent": "Auditor",
+        "model": "models/gemini-flash-lite-latest",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "error": "Quota épuisé après 3 tentatives",
+            "input_prompt": "Failed before prompt creation",
+            "output_response": ""
+        },
+        "status": "FAILED"
+    },
+    {
+        "id": "0db5851d-822f-4d38-b4b1-01413a17feb0",
+        "timestamp": "2026-01-15T23:58:34.630370",
+        "agent": "Fixer",
+        "model": "models/gemini-flash-lite-latest",
+        "action": "FIX",
+        "details": {
+            "iteration": 0,
+            "input_prompt": "Fix issues found in audit report",
+            "output_response": "['[PLACEHOLDER] Aucun changement appliqué']",
+            "files_to_fix": [
+                "test_datasets/internal\\case1_style.py",
+                "test_datasets/internal\\case2_bugs.py",
+                "test_datasets/internal\\case3_naming.py",
+                "test_datasets/internal\\case4_mixed.py",
+                "test_datasets/internal\\case5_syntax.py",
+                "test_datasets/internal\\test_case1_style.py",
+                "test_datasets/internal\\test_case2_bugs.py",
+                "test_datasets/internal\\test_case3_naming.py",
+                "test_datasets/internal\\test_case4_mixed.py",
+                "test_datasets/internal\\test_case5_syntax.py"
+            ],
+            "audit_report": "None"
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "b9f4ed76-5386-42c3-8bde-8946bcbcc067",
+        "timestamp": "2026-01-15T23:58:34.725733",
+        "agent": "Judge",
+        "model": "models/gemini-flash-lite-latest",
+        "action": "DEBUG",
+        "details": {
+            "iteration": 1,
+            "input_prompt": "Run tests on fixed code",
+            "output_response": "❌ [SIMULATION] Tests échoués",
+            "test_passed": false,
+            "changes_verified": [
+                "[PLACEHOLDER] Aucun changement appliqué"
+            ]
+        },
+        "status": "FAILURE"
+    },
+    {
+        "id": "2bdc0ad0-b6c6-4b21-9771-b6a751b28f41",
+        "timestamp": "2026-01-16T00:07:27.698742",
+        "agent": "Auditor",
+        "model": "models/gemini-flash-lite-latest",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "error": "Quota épuisé après 3 tentatives",
+            "input_prompt": "Failed before prompt creation",
+            "output_response": ""
+        },
+        "status": "FAILED"
+    },
+    {
+        "id": "01269c3d-e107-4ef6-a179-51d86323f635",
+        "timestamp": "2026-01-16T00:07:27.795115",
+        "agent": "Fixer",
+        "model": "models/gemini-flash-lite-latest",
+        "action": "FIX",
+        "details": {
+            "iteration": 0,
+            "input_prompt": "Fix issues found in audit report",
+            "output_response": "['[PLACEHOLDER] Aucun changement appliqué']",
+            "files_to_fix": [
+                "test_datasets/internal\\case1_style.py",
+                "test_datasets/internal\\case2_bugs.py",
+                "test_datasets/internal\\case3_naming.py",
+                "test_datasets/internal\\case4_mixed.py",
+                "test_datasets/internal\\case5_syntax.py",
+                "test_datasets/internal\\test_case1_style.py",
+                "test_datasets/internal\\test_case2_bugs.py",
+                "test_datasets/internal\\test_case3_naming.py",
+                "test_datasets/internal\\test_case4_mixed.py",
+                "test_datasets/internal\\test_case5_syntax.py"
+            ],
+            "audit_report": "None"
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "28a4d66d-5368-4595-9212-fb84f674eae0",
+        "timestamp": "2026-01-16T00:07:27.873743",
+        "agent": "Judge",
+        "model": "models/gemini-flash-lite-latest",
+        "action": "DEBUG",
+        "details": {
+            "iteration": 1,
+            "input_prompt": "Run tests on fixed code",
+            "output_response": "❌ [SIMULATION] Tests échoués",
+            "test_passed": false,
+            "changes_verified": [
+                "[PLACEHOLDER] Aucun changement appliqué"
+            ]
+        },
+        "status": "FAILURE"
+    },
+    {
+        "id": "0cc8ea56-c782-47f4-a5af-e0645c785152",
+        "timestamp": "2026-01-16T00:13:01.637463",
+        "agent": "Auditor",
+        "model": "models/gemini-flash-lite-latest",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "error": "Quota épuisé après 3 tentatives",
+            "input_prompt": "Failed before prompt creation",
+            "output_response": ""
+        },
+        "status": "FAILED"
+    },
+    {
+        "id": "1d06b670-14ec-4437-8964-a3b6d74facb1",
+        "timestamp": "2026-01-16T00:13:01.685291",
+        "agent": "Fixer",
+        "model": "models/gemini-flash-lite-latest",
+        "action": "FIX",
+        "details": {
+            "iteration": 0,
+            "input_prompt": "Fix issues found in audit report",
+            "output_response": "['[PLACEHOLDER] Aucun changement appliqué']",
+            "files_to_fix": [
+                "test_datasets/single_test\\case1_style.py"
+            ],
+            "audit_report": "None"
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "3da291ae-8d5b-4d81-8a10-948c4aef48be",
+        "timestamp": "2026-01-16T00:13:01.758358",
+        "agent": "Judge",
+        "model": "models/gemini-flash-lite-latest",
+        "action": "DEBUG",
+        "details": {
+            "iteration": 1,
+            "input_prompt": "Run tests on fixed code",
+            "output_response": "❌ [SIMULATION] Tests échoués",
+            "test_passed": false,
+            "changes_verified": [
+                "[PLACEHOLDER] Aucun changement appliqué"
+            ]
+        },
+        "status": "FAILURE"
     }
 ]
