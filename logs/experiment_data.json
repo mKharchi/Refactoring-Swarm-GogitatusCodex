@@ -415,5 +415,280 @@
             ]
         },
         "status": "FAILURE"
+    },
+    {
+        "id": "b94fe2df-bc05-4e97-8f77-351f2c4f9c43",
+        "timestamp": "2026-01-17T18:43:11.446548",
+        "agent": "Auditor",
+        "model": "MOCK-DEV",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "files_analyzed": [
+                "test_sample.py",
+                "test_file.py",
+                "good_code.py"
+            ],
+            "input_prompt": "Tu es un expert Python senior en analyse de code.\n\nMISSION: Analyser du code Python et identifier les problèmes de qualité.\n\nTYPES DE PROBLÈMES:\n1. BUGS: Division par zéro, variables non définies, erreurs de types, exceptions non gérées\n2. PEP8: Nommage incorrect, lignes >79 car, imports désorganisés, espaces manquants\n3. DOCUMENTATION: Fonctions sans docstring, format non-Google Style\n4. NAMING: Variables à une lettre, noms non descriptifs\n\nFORMAT SORTIE (STRICT):\nJSON uniquement, pas de texte, pas de markdown.\n\n{\n  \"score_qualite\": <0-10>,\n  \"problemes\": [\n    {\n      \"fichier\": \"nom.py\",\n      \"ligne\": <int>,\n      \"type\": \"bug|pep8|documentation|naming\",\n      \"severite\": \"critique|majeur|mineur\",\n      \"description\": \"<max 80 car>\",\n      \"suggestion\": \"<max 100 car>\"\n    }\n  ],\n  \"resume\": \"<max 150 car>\"\n}\n\nRÈGLES ANTI-HALLUCINATION:\n- Ne jamais inventer de problèmes inexistants\n- Vérifier chaque numéro de ligne\n- Être factuel et précis\n- Si aucun problème: {\"score_qualite\": 10, \"problemes\": [], \"resume\": \"Code conforme\"}\n\nCRITÈRES SCORE:\n10: Parfait | 8-9: Mineurs | 6-7: PEP8/doc | 4-5: Bugs mineurs | 0-3: Bugs critiques\n\nPRIORITÉ: bugs > documentation > pep8 > naming\n\nFICHIER: test_sample.py\nSCORE PYLINT: 2.5/10\n\nCODE:\n```python\n\n\n# Fichier: test_sample.py\n\ndef hello(name):\n    print(f'Hello {name}')\n    \ndef add(a,b):\n    return a+b\n\n\n\n# Fichier: test_file.py\ndef hello():\n    print('world')\n\n\n\n# Fichier: good_code.py\n\ndef add_numbers(num_a: int, num_b: int) -> int:\n    \"\"\"\n    Add two numbers together.\n    \n    Args:\n        num_a: First number\n        num_b: Second number\n        \n    Returns:\n        Sum of the two numbers\n    \"\"\"\n    return num_a + num_b\n\n\ndef multiply(num_a: int, num_b: int) -> int:\n    \"\"\"\n    Multiply two numbers.\n    \n    Args:\n        num_a: First number\n        num_b: Second number\n        \n    Returns:\n        Product of the two numbers\n    \"\"\"\n    return num_a * num_b\n\n\n```\n\nAnalyse et produis ton rapport JSON.",
+            "output_response": "{\n  \"problems\": [\n    {\n      \"file\": \"example.py\",\n        \"line\": 10,\n        \"type\": \"bug\",\n        \"severity\": \"critical\",\n        \"description\": \"There is a null pointer dereference.\",\n        \"suggestion\": \"Add a null check before dereferencing the pointer.\"\n    }\n    ]\n}",
+            "pylint_scores": [
+                {
+                    "file": "test_sample.py",
+                    "score": 0.0,
+                    "issues": 4
+                },
+                {
+                    "file": "test_file.py",
+                    "score": 0.0,
+                    "issues": 2
+                },
+                {
+                    "file": "good_code.py",
+                    "score": 7.5,
+                    "issues": 1
+                }
+            ],
+            "code_length": 682,
+            "dev_mode": true,
+            "used_prompt_builder": true
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "09fbcff1-8034-4fa3-b969-0558445f7339",
+        "timestamp": "2026-01-17T18:43:11.458727",
+        "agent": "Fixer",
+        "model": "MOCK-DEV",
+        "action": "FIX",
+        "details": {
+            "iteration": 1,
+            "input_prompt": "Fix issues found in audit report",
+            "output_response": "['[PLACEHOLDER] Aucun changement appliqué']",
+            "files_to_fix": [
+                "test_sample.py",
+                "test_file.py",
+                "good_code.py"
+            ],
+            "audit_report": "{\n  \"problems\": [\n    {\n      \"file\": \"example.py\",\n        \"line\": 10,\n        \"type\": \"bug\",\n     ..."
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "e572575d-5221-4b42-922b-c8f0d361a35b",
+        "timestamp": "2026-01-17T18:43:11.471531",
+        "agent": "Judge",
+        "model": "MOCK-DEV",
+        "action": "DEBUG",
+        "details": {
+            "iteration": 2,
+            "input_prompt": "Run tests on fixed code",
+            "output_response": "❌ [SIMULATION] Tests échoués",
+            "test_passed": false,
+            "changes_verified": [
+                "[PLACEHOLDER] Aucun changement appliqué"
+            ]
+        },
+        "status": "FAILURE"
+    },
+    {
+        "id": "fb150456-ee57-4e64-a78c-bee72df672ed",
+        "timestamp": "2026-01-17T18:43:11.490984",
+        "agent": "Fixer",
+        "model": "MOCK-DEV",
+        "action": "FIX",
+        "details": {
+            "iteration": 2,
+            "input_prompt": "Fix issues found in audit report",
+            "output_response": "['[PLACEHOLDER] Aucun changement appliqué']",
+            "files_to_fix": [
+                "test_sample.py",
+                "test_file.py",
+                "good_code.py"
+            ],
+            "audit_report": "{\n  \"problems\": [\n    {\n      \"file\": \"example.py\",\n        \"line\": 10,\n        \"type\": \"bug\",\n     ..."
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "d6022519-e7fc-48bf-87fb-f88574adda26",
+        "timestamp": "2026-01-17T18:43:11.508066",
+        "agent": "Judge",
+        "model": "MOCK-DEV",
+        "action": "DEBUG",
+        "details": {
+            "iteration": 3,
+            "input_prompt": "Run tests on fixed code",
+            "output_response": "❌ [SIMULATION] Tests échoués",
+            "test_passed": false,
+            "changes_verified": [
+                "[PLACEHOLDER] Aucun changement appliqué"
+            ]
+        },
+        "status": "FAILURE"
+    },
+    {
+        "id": "e14af64e-c952-4d8b-981c-b08f62f07930",
+        "timestamp": "2026-01-17T18:43:11.523934",
+        "agent": "Fixer",
+        "model": "MOCK-DEV",
+        "action": "FIX",
+        "details": {
+            "iteration": 3,
+            "input_prompt": "Fix issues found in audit report",
+            "output_response": "['[PLACEHOLDER] Aucun changement appliqué']",
+            "files_to_fix": [
+                "test_sample.py",
+                "test_file.py",
+                "good_code.py"
+            ],
+            "audit_report": "{\n  \"problems\": [\n    {\n      \"file\": \"example.py\",\n        \"line\": 10,\n        \"type\": \"bug\",\n     ..."
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "64bc7895-eb16-4945-aa63-0e1be463068f",
+        "timestamp": "2026-01-17T18:43:11.539474",
+        "agent": "Judge",
+        "model": "MOCK-DEV",
+        "action": "DEBUG",
+        "details": {
+            "iteration": 3,
+            "input_prompt": "Run tests on fixed code",
+            "output_response": "✅ [SIMULATION] Tests réussis",
+            "test_passed": true,
+            "changes_verified": [
+                "[PLACEHOLDER] Aucun changement appliqué"
+            ]
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "1e9a9c4f-cd19-4751-91a5-1c81572e039e",
+        "timestamp": "2026-01-17T19:06:31.474345",
+        "agent": "Auditor",
+        "model": "MOCK-DEV",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "files_analyzed": [
+                "test_sample.py",
+                "test_file.py",
+                "good_code.py"
+            ],
+            "input_prompt": "Tu es un expert Python senior en analyse de code.\n\nMISSION: Analyser du code Python et identifier les problèmes de qualité.\n\nTYPES DE PROBLÈMES:\n1. BUGS: Division par zéro, variables non définies, erreurs de types, exceptions non gérées\n2. PEP8: Nommage incorrect, lignes >79 car, imports désorganisés, espaces manquants\n3. DOCUMENTATION: Fonctions sans docstring, format non-Google Style\n4. NAMING: Variables à une lettre, noms non descriptifs\n\nFORMAT SORTIE (STRICT):\nJSON uniquement, pas de texte, pas de markdown.\n\n{\n  \"score_qualite\": <0-10>,\n  \"problemes\": [\n    {\n      \"fichier\": \"nom.py\",\n      \"ligne\": <int>,\n      \"type\": \"bug|pep8|documentation|naming\",\n      \"severite\": \"critique|majeur|mineur\",\n      \"description\": \"<max 80 car>\",\n      \"suggestion\": \"<max 100 car>\"\n    }\n  ],\n  \"resume\": \"<max 150 car>\"\n}\n\nRÈGLES ANTI-HALLUCINATION:\n- Ne jamais inventer de problèmes inexistants\n- Vérifier chaque numéro de ligne\n- Être factuel et précis\n- Si aucun problème: {\"score_qualite\": 10, \"problemes\": [], \"resume\": \"Code conforme\"}\n\nCRITÈRES SCORE:\n10: Parfait | 8-9: Mineurs | 6-7: PEP8/doc | 4-5: Bugs mineurs | 0-3: Bugs critiques\n\nPRIORITÉ: bugs > documentation > pep8 > naming\n\nFICHIER: test_sample.py\nSCORE PYLINT: 2.5/10\n\nCODE:\n```python\n\n\n# Fichier: test_sample.py\n\ndef hello(name):\n    print(f'Hello {name}')\n    \ndef add(a,b):\n    return a+b\n\n\n\n# Fichier: test_file.py\ndef hello():\n    print('world')\n\n\n\n# Fichier: good_code.py\n\ndef add_numbers(num_a: int, num_b: int) -> int:\n    \"\"\"\n    Add two numbers together.\n    \n    Args:\n        num_a: First number\n        num_b: Second number\n        \n    Returns:\n        Sum of the two numbers\n    \"\"\"\n    return num_a + num_b\n\n\ndef multiply(num_a: int, num_b: int) -> int:\n    \"\"\"\n    Multiply two numbers.\n    \n    Args:\n        num_a: First number\n        num_b: Second number\n        \n    Returns:\n        Product of the two numbers\n    \"\"\"\n    return num_a * num_b\n\n\n```\n\nAnalyse et produis ton rapport JSON.",
+            "output_response": "{\n  \"problems\": [\n    {\n      \"file\": \"example.py\",\n        \"line\": 10,\n        \"type\": \"bug\",\n        \"severity\": \"critical\",\n        \"description\": \"There is a null pointer dereference.\",\n        \"suggestion\": \"Add a null check before dereferencing the pointer.\"\n    }\n    ]\n}",
+            "pylint_scores": [
+                {
+                    "file": "test_sample.py",
+                    "score": 0.0,
+                    "issues": 4
+                },
+                {
+                    "file": "test_file.py",
+                    "score": 0.0,
+                    "issues": 2
+                },
+                {
+                    "file": "good_code.py",
+                    "score": 7.5,
+                    "issues": 1
+                }
+            ],
+            "code_length": 682,
+            "dev_mode": true,
+            "used_prompt_builder": true
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "6dd29138-bf41-4e9e-8362-dbf57620b9e5",
+        "timestamp": "2026-01-17T19:06:31.506654",
+        "agent": "Fixer",
+        "model": "MOCK-DEV",
+        "action": "FIX",
+        "details": {
+            "iteration": 1,
+            "error": "PromptBuilder.construire_prompt_correcteur() got an unexpected keyword argument 'rapport_audit'",
+            "input_prompt": "Failed before prompt creation",
+            "output_response": ""
+        },
+        "status": "FAILED"
+    },
+    {
+        "id": "7cd7ccf5-ef89-45c8-87ec-3af6557bdb37",
+        "timestamp": "2026-01-17T19:06:31.520750",
+        "agent": "Judge",
+        "model": "MOCK-DEV",
+        "action": "DEBUG",
+        "details": {
+            "iteration": 2,
+            "input_prompt": "Run tests on fixed code",
+            "output_response": "❌ [SIMULATION] Tests échoués",
+            "test_passed": false,
+            "changes_verified": [
+                "Erreur critique: PromptBuilder.construire_prompt_correcteur() got an unexpected keyword argument 'rapport_audit'"
+            ]
+        },
+        "status": "FAILURE"
+    },
+    {
+        "id": "86719716-0494-4ff2-9edb-a9035f9ee600",
+        "timestamp": "2026-01-17T19:06:31.549188",
+        "agent": "Fixer",
+        "model": "MOCK-DEV",
+        "action": "FIX",
+        "details": {
+            "iteration": 2,
+            "error": "PromptBuilder.construire_prompt_correcteur() got an unexpected keyword argument 'rapport_audit'",
+            "input_prompt": "Failed before prompt creation",
+            "output_response": ""
+        },
+        "status": "FAILED"
+    },
+    {
+        "id": "7e37e15c-1d92-4045-89e3-d1e706c6977a",
+        "timestamp": "2026-01-17T19:06:31.560895",
+        "agent": "Judge",
+        "model": "MOCK-DEV",
+        "action": "DEBUG",
+        "details": {
+            "iteration": 3,
+            "input_prompt": "Run tests on fixed code",
+            "output_response": "❌ [SIMULATION] Tests échoués",
+            "test_passed": false,
+            "changes_verified": [
+                "Erreur critique: PromptBuilder.construire_prompt_correcteur() got an unexpected keyword argument 'rapport_audit'"
+            ]
+        },
+        "status": "FAILURE"
+    },
+    {
+        "id": "91e106a1-e204-46d1-b519-9cf1e28ad2f0",
+        "timestamp": "2026-01-17T19:06:31.588821",
+        "agent": "Fixer",
+        "model": "MOCK-DEV",
+        "action": "FIX",
+        "details": {
+            "iteration": 3,
+            "error": "PromptBuilder.construire_prompt_correcteur() got an unexpected keyword argument 'rapport_audit'",
+            "input_prompt": "Failed before prompt creation",
+            "output_response": ""
+        },
+        "status": "FAILED"
+    },
+    {
+        "id": "9fccebab-b191-4ec5-baaa-2ff78d2e9a63",
+        "timestamp": "2026-01-17T19:06:31.600381",
+        "agent": "Judge",
+        "model": "MOCK-DEV",
+        "action": "DEBUG",
+        "details": {
+            "iteration": 3,
+            "input_prompt": "Run tests on fixed code",
+            "output_response": "✅ [SIMULATION] Tests réussis",
+            "test_passed": true,
+            "changes_verified": [
+                "Erreur critique: PromptBuilder.construire_prompt_correcteur() got an unexpected keyword argument 'rapport_audit'"
+            ]
+        },
+        "status": "SUCCESS"
     }
 ]
