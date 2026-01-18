@@ -42,14 +42,15 @@ class PromptBuilder:
         # Charger le prompt système depuis le cache
         system_prompt = self.context_mgr.get_system_prompt("auditor")
         
-        # Construire le prompt utilisateur (minimal)
+        # Construire le prompt utilisateur SANS balises markdown
         user_prompt = f"FICHIER: {nom_fichier}\n"
         
         if score_pylint is not None:
-            user_prompt += f"SCORE PYLINT: {score_pylint:.1f}/10\n"
+            user_prompt += f"SCORE PYLINT ACTUEL: {score_pylint:.1f}/10\n"
         
-        user_prompt += f"\nCODE:\n```python\n{code_source}\n```\n"
-        user_prompt += "\nAnalyse et produis ton rapport JSON."
+        # Code sans balises markdown pour éviter confusion
+        user_prompt += f"\nCODE À ANALYSER:\n{code_source}\n"
+        user_prompt += "\nRetourne ton analyse au format JSON strict (pas de markdown, pas de texte avant/après)."
         
         return system_prompt, user_prompt
     
@@ -81,16 +82,36 @@ class PromptBuilder:
             if p.get("severite") in ["critique", "majeur"]
         ]
         
-        # Si aucun prioritaire, prendre tous
+        # Si aucun prioritaire, prendre tous (max 10 pour éviter saturation)
         if not problemes_prioritaires:
-            problemes_prioritaires = problemes
+            problemes_prioritaires = problemes[:10] if len(problemes) > 10 else problemes
+        else:
+            problemes_prioritaires = problemes_prioritaires[:10]
         
-        # Construire user prompt
-        user_prompt = f"FICHIER: {nom_fichier}\n"
-        user_prompt += f"\nCODE ACTUEL:\n```python\n{code_source}\n```\n"
-        user_prompt += f"\nPROBLÈMES ({len(problemes_prioritaires)}):\n"
-        user_prompt += json.dumps(problemes_prioritaires, indent=2, ensure_ascii=False)
-        user_prompt += "\n\nProduis le code corrigé complet."
+        # Construire user prompt SANS balises markdown pour éviter confusion
+        user_prompt = f"""FICHIER: {nom_fichier}
+
+CODE À CORRIGER:
+{code_source}
+
+PROBLÈMES DÉTECTÉS ({len(problemes_prioritaires)}):
+{json.dumps(problemes_prioritaires, indent=2, ensure_ascii=False)}
+
+INSTRUCTIONS:
+1. Lis le code ci-dessus
+2. Corrige tous les problèmes listés
+3. Ajoute docstrings Google-style manquantes
+4. Assure-toi que le code compile sans erreur
+5. Retourne UNIQUEMENT le code corrigé complet
+
+IMPORTANT:
+- NE mets PAS de ```python ou ```
+- NE mets PAS d'explications
+- Retourne DIRECTEMENT le code corrigé
+- Le code doit commencer par import, def, class, ou #
+
+CODE CORRIGÉ DU FICHIER {nom_fichier}:
+"""
         
         return system_prompt, user_prompt
     
@@ -168,10 +189,70 @@ class PromptBuilder:
         
         # Warning si trop long
         if analyse["tokens_total_input"] > 1500:
-            print(f" [{agent_name}] Prompt long : {analyse['tokens_total_input']} tokens")
+            print(f"⚠️ [{agent_name}] Prompt long : {analyse['tokens_total_input']} tokens")
         
         return analyse
 
 
 # Instance globale
 prompt_builder = PromptBuilder()
+def construire_prompt_correcteur(
+    self,
+    code_source: str,
+    problemes: List[Dict],
+    nom_fichier: str
+) -> Tuple[str, str]:
+    """
+    Construit le prompt pour l'agent correcteur.
+    
+    Contexte ciblé : code + problèmes prioritaires (filtrés).
+    
+    Args:
+        code_source: Le code à corriger
+        problemes: Liste des problèmes détectés
+        nom_fichier: Nom du fichier
+    
+    Returns:
+        (system_prompt, user_prompt)
+    """
+    system_prompt = self.context_mgr.get_system_prompt("fixer")
+    
+    # Filtrer pour garder seulement problèmes critiques/majeurs
+    # (optimisation tokens)
+    problemes_prioritaires = [
+        p for p in problemes
+        if p.get("severite") in ["critique", "majeur"]
+    ]
+    
+    # Si aucun prioritaire, prendre tous (max 10 pour éviter saturation)
+    if not problemes_prioritaires:
+        problemes_prioritaires = problemes[:10] if len(problemes) > 10 else problemes
+    else:
+        problemes_prioritaires = problemes_prioritaires[:10]
+    
+    # Construire user prompt SANS balises markdown pour éviter confusion
+    user_prompt = f"""FICHIER: {nom_fichier}
+
+CODE À CORRIGER:
+{code_source}
+
+PROBLÈMES DÉTECTÉS ({len(problemes_prioritaires)}):
+{json.dumps(problemes_prioritaires, indent=2, ensure_ascii=False)}
+
+INSTRUCTIONS:
+1. Lis le code ci-dessus
+2. Corrige tous les problèmes listés
+3. Ajoute docstrings Google-style manquantes
+4. Assure-toi que le code compile sans erreur
+5. Retourne UNIQUEMENT le code corrigé complet
+
+IMPORTANT:
+- NE mets PAS de ```python ou ```
+- NE mets PAS d'explications
+- Retourne DIRECTEMENT le code corrigé
+- Le code doit commencer par import, def, class, ou #
+
+CODE CORRIGÉ DU FICHIER {nom_fichier}:
+"""
+    
+    return system_prompt, user_prompt

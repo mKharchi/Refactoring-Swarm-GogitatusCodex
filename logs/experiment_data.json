@@ -690,5 +690,1198 @@
             ]
         },
         "status": "SUCCESS"
+    },
+    {
+        "id": "2a257f92-345e-4887-ad13-9a1ce2475d2a",
+        "timestamp": "2026-01-18T18:04:43.213550",
+        "agent": "Auditor",
+        "model": "MOCK-DEV",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "files_analyzed": [
+                "test_sample.py",
+                "test_file.py",
+                "good_code.py"
+            ],
+            "input_prompt": "Tu es un expert Python senior en analyse de code.\n\nMISSION: Analyser du code Python et identifier les problèmes de qualité.\n\nTYPES DE PROBLÈMES:\n1. BUGS: Division par zéro, variables non définies, erreurs de types, exceptions non gérées\n2. PEP8: Nommage incorrect, lignes >79 car, imports désorganisés, espaces manquants\n3. DOCUMENTATION: Fonctions sans docstring, format non-Google Style\n4. NAMING: Variables à une lettre, noms non descriptifs\n\nFORMAT SORTIE (STRICT):\nJSON uniquement, pas de texte, pas de markdown.\n\n{\n  \"score_qualite\": <0-10>,\n  \"problemes\": [\n    {\n      \"fichier\": \"nom.py\",\n      \"ligne\": <int>,\n      \"type\": \"bug|pep8|documentation|naming\",\n      \"severite\": \"critique|majeur|mineur\",\n      \"description\": \"<max 80 car>\",\n      \"suggestion\": \"<max 100 car>\"\n    }\n  ],\n  \"resume\": \"<max 150 car>\"\n}\n\nRÈGLES ANTI-HALLUCINATION:\n- Ne jamais inventer de problèmes inexistants\n- Vérifier chaque numéro de ligne\n- Être factuel et précis\n- Si aucun problème: {\"score_qualite\": 10, \"problemes\": [], \"resume\": \"Code conforme\"}\n\nCRITÈRES SCORE:\n10: Parfait | 8-9: Mineurs | 6-7: PEP8/doc | 4-5: Bugs mineurs | 0-3: Bugs critiques\n\nPRIORITÉ: bugs > documentation > pep8 > naming\n\nFICHIER: test_sample.py\nSCORE PYLINT: 2.5/10\n\nCODE:\n```python\n\n\n# Fichier: test_sample.py\n\ndef hello(name):\n    print(f'Hello {name}')\n    \ndef add(a,b):\n    return a+b\n\n\n\n# Fichier: test_file.py\ndef hello():\n    print('world')\n\n\n\n# Fichier: good_code.py\n\ndef add_numbers(num_a: int, num_b: int) -> int:\n    \"\"\"\n    Add two numbers together.\n    \n    Args:\n        num_a: First number\n        num_b: Second number\n        \n    Returns:\n        Sum of the two numbers\n    \"\"\"\n    return num_a + num_b\n\n\ndef multiply(num_a: int, num_b: int) -> int:\n    \"\"\"\n    Multiply two numbers.\n    \n    Args:\n        num_a: First number\n        num_b: Second number\n        \n    Returns:\n        Product of the two numbers\n    \"\"\"\n    return num_a * num_b\n\n\n```\n\nAnalyse et produis ton rapport JSON.",
+            "output_response": "{\n  \"problems\": [\n    {\n      \"file\": \"example.py\",\n        \"line\": 10,\n        \"type\": \"bug\",\n        \"severity\": \"critical\",\n        \"description\": \"There is a null pointer dereference.\",\n        \"suggestion\": \"Add a null check before dereferencing the pointer.\"\n    }\n    ]\n}",
+            "pylint_scores": [
+                {
+                    "file": "test_sample.py",
+                    "score": 0.0,
+                    "issues": 4
+                },
+                {
+                    "file": "test_file.py",
+                    "score": 0.0,
+                    "issues": 2
+                },
+                {
+                    "file": "good_code.py",
+                    "score": 7.5,
+                    "issues": 1
+                }
+            ],
+            "code_length": 682,
+            "dev_mode": true,
+            "used_prompt_builder": true
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "84ce34f2-e1db-40ab-9969-d3e2ba4fadd3",
+        "timestamp": "2026-01-18T18:04:43.251869",
+        "agent": "Fixer",
+        "model": "MOCK-DEV",
+        "action": "FIX",
+        "details": {
+            "iteration": 1,
+            "error": "PromptBuilder.construire_prompt_correcteur() got an unexpected keyword argument 'rapport_audit'",
+            "input_prompt": "Failed before prompt creation",
+            "output_response": ""
+        },
+        "status": "FAILED"
+    },
+    {
+        "id": "b93ad719-e6c1-40de-aa39-c9a9cec98b89",
+        "timestamp": "2026-01-18T18:04:43.265436",
+        "agent": "Judge",
+        "model": "MOCK-DEV",
+        "action": "DEBUG",
+        "details": {
+            "iteration": 2,
+            "input_prompt": "Run tests on fixed code",
+            "output_response": "❌ [SIMULATION] Tests échoués",
+            "test_passed": false,
+            "changes_verified": [
+                "Erreur critique: PromptBuilder.construire_prompt_correcteur() got an unexpected keyword argument 'rapport_audit'"
+            ]
+        },
+        "status": "FAILURE"
+    },
+    {
+        "id": "f0ed1888-1d99-4eae-b216-3099e0eaa599",
+        "timestamp": "2026-01-18T18:04:43.298867",
+        "agent": "Fixer",
+        "model": "MOCK-DEV",
+        "action": "FIX",
+        "details": {
+            "iteration": 2,
+            "error": "PromptBuilder.construire_prompt_correcteur() got an unexpected keyword argument 'rapport_audit'",
+            "input_prompt": "Failed before prompt creation",
+            "output_response": ""
+        },
+        "status": "FAILED"
+    },
+    {
+        "id": "369a0a81-4107-446e-bb85-28f2ba2555b2",
+        "timestamp": "2026-01-18T18:04:43.310761",
+        "agent": "Judge",
+        "model": "MOCK-DEV",
+        "action": "DEBUG",
+        "details": {
+            "iteration": 3,
+            "input_prompt": "Run tests on fixed code",
+            "output_response": "❌ [SIMULATION] Tests échoués",
+            "test_passed": false,
+            "changes_verified": [
+                "Erreur critique: PromptBuilder.construire_prompt_correcteur() got an unexpected keyword argument 'rapport_audit'"
+            ]
+        },
+        "status": "FAILURE"
+    },
+    {
+        "id": "c9fe61ee-54d4-447c-a1f4-2e10cebf27e3",
+        "timestamp": "2026-01-18T18:04:43.338493",
+        "agent": "Fixer",
+        "model": "MOCK-DEV",
+        "action": "FIX",
+        "details": {
+            "iteration": 3,
+            "error": "PromptBuilder.construire_prompt_correcteur() got an unexpected keyword argument 'rapport_audit'",
+            "input_prompt": "Failed before prompt creation",
+            "output_response": ""
+        },
+        "status": "FAILED"
+    },
+    {
+        "id": "3502f052-b2ba-48b9-86ef-bcc39aff95c2",
+        "timestamp": "2026-01-18T18:04:43.355070",
+        "agent": "Judge",
+        "model": "MOCK-DEV",
+        "action": "DEBUG",
+        "details": {
+            "iteration": 3,
+            "input_prompt": "Run tests on fixed code",
+            "output_response": "✅ [SIMULATION] Tests réussis",
+            "test_passed": true,
+            "changes_verified": [
+                "Erreur critique: PromptBuilder.construire_prompt_correcteur() got an unexpected keyword argument 'rapport_audit'"
+            ]
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "5ee437a8-6980-41ed-8496-a864debf237e",
+        "timestamp": "2026-01-18T18:07:09.057571",
+        "agent": "Auditor",
+        "model": "MOCK-DEV",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "files_analyzed": [
+                "test_sample.py",
+                "test_file.py",
+                "good_code.py"
+            ],
+            "input_prompt": "Tu es un expert Python senior en analyse de code.\n\nMISSION: Analyser du code Python et identifier les problèmes de qualité.\n\nTYPES DE PROBLÈMES:\n1. BUGS: Division par zéro, variables non définies, erreurs de types, exceptions non gérées\n2. PEP8: Nommage incorrect, lignes >79 car, imports désorganisés, espaces manquants\n3. DOCUMENTATION: Fonctions sans docstring, format non-Google Style\n4. NAMING: Variables à une lettre, noms non descriptifs\n\nFORMAT SORTIE (STRICT):\nJSON uniquement, pas de texte, pas de markdown.\n\n{\n  \"score_qualite\": <0-10>,\n  \"problemes\": [\n    {\n      \"fichier\": \"nom.py\",\n      \"ligne\": <int>,\n      \"type\": \"bug|pep8|documentation|naming\",\n      \"severite\": \"critique|majeur|mineur\",\n      \"description\": \"<max 80 car>\",\n      \"suggestion\": \"<max 100 car>\"\n    }\n  ],\n  \"resume\": \"<max 150 car>\"\n}\n\nRÈGLES ANTI-HALLUCINATION:\n- Ne jamais inventer de problèmes inexistants\n- Vérifier chaque numéro de ligne\n- Être factuel et précis\n- Si aucun problème: {\"score_qualite\": 10, \"problemes\": [], \"resume\": \"Code conforme\"}\n\nCRITÈRES SCORE:\n10: Parfait | 8-9: Mineurs | 6-7: PEP8/doc | 4-5: Bugs mineurs | 0-3: Bugs critiques\n\nPRIORITÉ: bugs > documentation > pep8 > naming\n\nFICHIER: test_sample.py\nSCORE PYLINT: 2.5/10\n\nCODE:\n```python\n\n\n# Fichier: test_sample.py\n\ndef hello(name):\n    print(f'Hello {name}')\n    \ndef add(a,b):\n    return a+b\n\n\n\n# Fichier: test_file.py\ndef hello():\n    print('world')\n\n\n\n# Fichier: good_code.py\n\ndef add_numbers(num_a: int, num_b: int) -> int:\n    \"\"\"\n    Add two numbers together.\n    \n    Args:\n        num_a: First number\n        num_b: Second number\n        \n    Returns:\n        Sum of the two numbers\n    \"\"\"\n    return num_a + num_b\n\n\ndef multiply(num_a: int, num_b: int) -> int:\n    \"\"\"\n    Multiply two numbers.\n    \n    Args:\n        num_a: First number\n        num_b: Second number\n        \n    Returns:\n        Product of the two numbers\n    \"\"\"\n    return num_a * num_b\n\n\n```\n\nAnalyse et produis ton rapport JSON.",
+            "output_response": "{\n  \"problems\": [\n    {\n      \"file\": \"example.py\",\n        \"line\": 10,\n        \"type\": \"bug\",\n        \"severity\": \"critical\",\n        \"description\": \"There is a null pointer dereference.\",\n        \"suggestion\": \"Add a null check before dereferencing the pointer.\"\n    }\n    ]\n}",
+            "pylint_scores": [
+                {
+                    "file": "test_sample.py",
+                    "score": 0.0,
+                    "issues": 4
+                },
+                {
+                    "file": "test_file.py",
+                    "score": 0.0,
+                    "issues": 2
+                },
+                {
+                    "file": "good_code.py",
+                    "score": 7.5,
+                    "issues": 1
+                }
+            ],
+            "code_length": 682,
+            "dev_mode": true,
+            "used_prompt_builder": true
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "05f4d290-1055-490a-848c-aa9a223d903c",
+        "timestamp": "2026-01-18T18:07:10.095075",
+        "agent": "Fixer",
+        "model": "MOCK-DEV",
+        "action": "FIX",
+        "details": {
+            "iteration": 1,
+            "file_fixed": "test_sample.py",
+            "input_prompt": "Tu es un développeur Python expert en refactoring.\n\nMISSION: Corriger du code Python selon une liste de problèmes.\n\nPRIORITÉS:\n1. BUGS: Corriger tous les bugs, ajouter gestion erreurs\n2. DOCUMENTATION: Docstrings Google Style (Description, Args, Returns, Raises)\n3. PEP8: Formatage, indentation 4 espaces, imports organisés\n4. NAMING: snake_case (fonctions/vars), PascalCase (classes)\n\nCONTRAINTES:\n- Ne jamais changer la logique métier (sauf bugs)\n- Ne jamais renommer fonctions publiques\n- Ne jamais supprimer code fonctionnel\n- Ajouter type hints Python 3.10+ (list[int], dict[str, int], int | None)\n\nFORMAT SORTIE:\nCode Python uniquement. Pas de markdown, pas d'explications, pas de commentaires sur modifications.\n\nVÉRIFICATIONS:\n- Tous bugs corrigés\n- Toutes fonctions avec docstring\n- Tous paramètres avec type hints\n- Code respecte PEP8\n- Syntaxe valide\n\nIMPORTS (ordre):\n1. Standard library\n2. (ligne vide)\n3. Tiers (pip)\n4. (ligne vide)\n5. Locaux\n\nFICHIER: test_sample.py\n\nCODE ACTUEL:\n```python\n\ndef hello(name):\n    print(f'Hello {name}')\n    \ndef add(a,b):\n    return a+b\n\n```\n\nPROBLÈMES (1):\n[\n  {\n    \"fichier\": \"test_sample.py\",\n    \"ligne\": 1,\n    \"type\": \"general\",\n    \"severite\": \"mineur\",\n    \"description\": \"Amélioration générale du code\",\n    \"suggestion\": \"Ajouter documentation et respecter PEP8\"\n  }\n]\n\nProduis le code corrigé complet.",
+            "output_response": "# Code corrigé en mode DEV\npass",
+            "code_length_before": 79,
+            "code_length_after": 31,
+            "dev_mode": true,
+            "used_prompt_builder": true
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "dbedc77c-d56b-4957-9680-1567a816b801",
+        "timestamp": "2026-01-18T18:07:11.107232",
+        "agent": "Fixer",
+        "model": "MOCK-DEV",
+        "action": "FIX",
+        "details": {
+            "iteration": 1,
+            "file_fixed": "test_file.py",
+            "input_prompt": "Tu es un développeur Python expert en refactoring.\n\nMISSION: Corriger du code Python selon une liste de problèmes.\n\nPRIORITÉS:\n1. BUGS: Corriger tous les bugs, ajouter gestion erreurs\n2. DOCUMENTATION: Docstrings Google Style (Description, Args, Returns, Raises)\n3. PEP8: Formatage, indentation 4 espaces, imports organisés\n4. NAMING: snake_case (fonctions/vars), PascalCase (classes)\n\nCONTRAINTES:\n- Ne jamais changer la logique métier (sauf bugs)\n- Ne jamais renommer fonctions publiques\n- Ne jamais supprimer code fonctionnel\n- Ajouter type hints Python 3.10+ (list[int], dict[str, int], int | None)\n\nFORMAT SORTIE:\nCode Python uniquement. Pas de markdown, pas d'explications, pas de commentaires sur modifications.\n\nVÉRIFICATIONS:\n- Tous bugs corrigés\n- Toutes fonctions avec docstring\n- Tous paramètres avec type hints\n- Code respecte PEP8\n- Syntaxe valide\n\nIMPORTS (ordre):\n1. Standard library\n2. (ligne vide)\n3. Tiers (pip)\n4. (ligne vide)\n5. Locaux\n\nFICHIER: test_file.py\n\nCODE ACTUEL:\n```python\ndef hello():\n    print('world')\n\n```\n\nPROBLÈMES (1):\n[\n  {\n    \"fichier\": \"test_file.py\",\n    \"ligne\": 1,\n    \"type\": \"general\",\n    \"severite\": \"mineur\",\n    \"description\": \"Amélioration générale du code\",\n    \"suggestion\": \"Ajouter documentation et respecter PEP8\"\n  }\n]\n\nProduis le code corrigé complet.",
+            "output_response": "# Code corrigé en mode DEV\npass",
+            "code_length_before": 32,
+            "code_length_after": 31,
+            "dev_mode": true,
+            "used_prompt_builder": true
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "4e05ad84-298d-48fd-8257-b728da890af2",
+        "timestamp": "2026-01-18T18:07:12.111177",
+        "agent": "Fixer",
+        "model": "MOCK-DEV",
+        "action": "FIX",
+        "details": {
+            "iteration": 1,
+            "file_fixed": "good_code.py",
+            "input_prompt": "Tu es un développeur Python expert en refactoring.\n\nMISSION: Corriger du code Python selon une liste de problèmes.\n\nPRIORITÉS:\n1. BUGS: Corriger tous les bugs, ajouter gestion erreurs\n2. DOCUMENTATION: Docstrings Google Style (Description, Args, Returns, Raises)\n3. PEP8: Formatage, indentation 4 espaces, imports organisés\n4. NAMING: snake_case (fonctions/vars), PascalCase (classes)\n\nCONTRAINTES:\n- Ne jamais changer la logique métier (sauf bugs)\n- Ne jamais renommer fonctions publiques\n- Ne jamais supprimer code fonctionnel\n- Ajouter type hints Python 3.10+ (list[int], dict[str, int], int | None)\n\nFORMAT SORTIE:\nCode Python uniquement. Pas de markdown, pas d'explications, pas de commentaires sur modifications.\n\nVÉRIFICATIONS:\n- Tous bugs corrigés\n- Toutes fonctions avec docstring\n- Tous paramètres avec type hints\n- Code respecte PEP8\n- Syntaxe valide\n\nIMPORTS (ordre):\n1. Standard library\n2. (ligne vide)\n3. Tiers (pip)\n4. (ligne vide)\n5. Locaux\n\nFICHIER: good_code.py\n\nCODE ACTUEL:\n```python\n\ndef add_numbers(num_a: int, num_b: int) -> int:\n    \"\"\"\n    Add two numbers together.\n    \n    Args:\n        num_a: First number\n        num_b: Second number\n        \n    Returns:\n        Sum of the two numbers\n    \"\"\"\n    return num_a + num_b\n\n\ndef multiply(num_a: int, num_b: int) -> int:\n    \"\"\"\n    Multiply two numbers.\n    \n    Args:\n        num_a: First number\n        num_b: Second number\n        \n    Returns:\n        Product of the two numbers\n    \"\"\"\n    return num_a * num_b\n\n```\n\nPROBLÈMES (1):\n[\n  {\n    \"fichier\": \"good_code.py\",\n    \"ligne\": 1,\n    \"type\": \"general\",\n    \"severite\": \"mineur\",\n    \"description\": \"Amélioration générale du code\",\n    \"suggestion\": \"Ajouter documentation et respecter PEP8\"\n  }\n]\n\nProduis le code corrigé complet.",
+            "output_response": "# Code corrigé en mode DEV\npass",
+            "code_length_before": 488,
+            "code_length_after": 31,
+            "dev_mode": true,
+            "used_prompt_builder": true
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "cd9d6f9c-e765-4ec3-b020-a02083278b8f",
+        "timestamp": "2026-01-18T18:07:12.135041",
+        "agent": "Judge",
+        "model": "MOCK-DEV",
+        "action": "DEBUG",
+        "details": {
+            "iteration": 2,
+            "input_prompt": "Run tests on fixed code",
+            "output_response": "❌ [SIMULATION] Tests échoués",
+            "test_passed": false,
+            "changes_verified": [
+                "✅ test_sample.py: Code corrigé (79 → 31 chars)",
+                "✅ test_file.py: Code corrigé (32 → 31 chars)",
+                "✅ good_code.py: Code corrigé (488 → 31 chars)"
+            ]
+        },
+        "status": "FAILURE"
+    },
+    {
+        "id": "cc0588a5-79ce-4bfd-b0ec-717116fbfb0a",
+        "timestamp": "2026-01-18T18:07:13.171388",
+        "agent": "Fixer",
+        "model": "MOCK-DEV",
+        "action": "FIX",
+        "details": {
+            "iteration": 2,
+            "file_fixed": "test_sample.py",
+            "input_prompt": "Tu es un développeur Python expert en refactoring.\n\nMISSION: Corriger du code Python selon une liste de problèmes.\n\nPRIORITÉS:\n1. BUGS: Corriger tous les bugs, ajouter gestion erreurs\n2. DOCUMENTATION: Docstrings Google Style (Description, Args, Returns, Raises)\n3. PEP8: Formatage, indentation 4 espaces, imports organisés\n4. NAMING: snake_case (fonctions/vars), PascalCase (classes)\n\nCONTRAINTES:\n- Ne jamais changer la logique métier (sauf bugs)\n- Ne jamais renommer fonctions publiques\n- Ne jamais supprimer code fonctionnel\n- Ajouter type hints Python 3.10+ (list[int], dict[str, int], int | None)\n\nFORMAT SORTIE:\nCode Python uniquement. Pas de markdown, pas d'explications, pas de commentaires sur modifications.\n\nVÉRIFICATIONS:\n- Tous bugs corrigés\n- Toutes fonctions avec docstring\n- Tous paramètres avec type hints\n- Code respecte PEP8\n- Syntaxe valide\n\nIMPORTS (ordre):\n1. Standard library\n2. (ligne vide)\n3. Tiers (pip)\n4. (ligne vide)\n5. Locaux\n\nFICHIER: test_sample.py\n\nCODE ACTUEL:\n```python\n# Code corrigé en mode DEV\npass\n```\n\nPROBLÈMES (1):\n[\n  {\n    \"fichier\": \"test_sample.py\",\n    \"ligne\": 1,\n    \"type\": \"general\",\n    \"severite\": \"mineur\",\n    \"description\": \"Amélioration générale du code\",\n    \"suggestion\": \"Ajouter documentation et respecter PEP8\"\n  }\n]\n\nProduis le code corrigé complet.",
+            "output_response": "# Code corrigé en mode DEV\npass",
+            "code_length_before": 31,
+            "code_length_after": 31,
+            "dev_mode": true,
+            "used_prompt_builder": true
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "479c553e-1957-4bc9-9339-864665d42f11",
+        "timestamp": "2026-01-18T18:07:14.177091",
+        "agent": "Fixer",
+        "model": "MOCK-DEV",
+        "action": "FIX",
+        "details": {
+            "iteration": 2,
+            "file_fixed": "test_file.py",
+            "input_prompt": "Tu es un développeur Python expert en refactoring.\n\nMISSION: Corriger du code Python selon une liste de problèmes.\n\nPRIORITÉS:\n1. BUGS: Corriger tous les bugs, ajouter gestion erreurs\n2. DOCUMENTATION: Docstrings Google Style (Description, Args, Returns, Raises)\n3. PEP8: Formatage, indentation 4 espaces, imports organisés\n4. NAMING: snake_case (fonctions/vars), PascalCase (classes)\n\nCONTRAINTES:\n- Ne jamais changer la logique métier (sauf bugs)\n- Ne jamais renommer fonctions publiques\n- Ne jamais supprimer code fonctionnel\n- Ajouter type hints Python 3.10+ (list[int], dict[str, int], int | None)\n\nFORMAT SORTIE:\nCode Python uniquement. Pas de markdown, pas d'explications, pas de commentaires sur modifications.\n\nVÉRIFICATIONS:\n- Tous bugs corrigés\n- Toutes fonctions avec docstring\n- Tous paramètres avec type hints\n- Code respecte PEP8\n- Syntaxe valide\n\nIMPORTS (ordre):\n1. Standard library\n2. (ligne vide)\n3. Tiers (pip)\n4. (ligne vide)\n5. Locaux\n\nFICHIER: test_file.py\n\nCODE ACTUEL:\n```python\n# Code corrigé en mode DEV\npass\n```\n\nPROBLÈMES (1):\n[\n  {\n    \"fichier\": \"test_file.py\",\n    \"ligne\": 1,\n    \"type\": \"general\",\n    \"severite\": \"mineur\",\n    \"description\": \"Amélioration générale du code\",\n    \"suggestion\": \"Ajouter documentation et respecter PEP8\"\n  }\n]\n\nProduis le code corrigé complet.",
+            "output_response": "# Code corrigé en mode DEV\npass",
+            "code_length_before": 31,
+            "code_length_after": 31,
+            "dev_mode": true,
+            "used_prompt_builder": true
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "0a07daa9-3812-4195-916d-dda40ba178c8",
+        "timestamp": "2026-01-18T18:07:15.190014",
+        "agent": "Fixer",
+        "model": "MOCK-DEV",
+        "action": "FIX",
+        "details": {
+            "iteration": 2,
+            "file_fixed": "good_code.py",
+            "input_prompt": "Tu es un développeur Python expert en refactoring.\n\nMISSION: Corriger du code Python selon une liste de problèmes.\n\nPRIORITÉS:\n1. BUGS: Corriger tous les bugs, ajouter gestion erreurs\n2. DOCUMENTATION: Docstrings Google Style (Description, Args, Returns, Raises)\n3. PEP8: Formatage, indentation 4 espaces, imports organisés\n4. NAMING: snake_case (fonctions/vars), PascalCase (classes)\n\nCONTRAINTES:\n- Ne jamais changer la logique métier (sauf bugs)\n- Ne jamais renommer fonctions publiques\n- Ne jamais supprimer code fonctionnel\n- Ajouter type hints Python 3.10+ (list[int], dict[str, int], int | None)\n\nFORMAT SORTIE:\nCode Python uniquement. Pas de markdown, pas d'explications, pas de commentaires sur modifications.\n\nVÉRIFICATIONS:\n- Tous bugs corrigés\n- Toutes fonctions avec docstring\n- Tous paramètres avec type hints\n- Code respecte PEP8\n- Syntaxe valide\n\nIMPORTS (ordre):\n1. Standard library\n2. (ligne vide)\n3. Tiers (pip)\n4. (ligne vide)\n5. Locaux\n\nFICHIER: good_code.py\n\nCODE ACTUEL:\n```python\n# Code corrigé en mode DEV\npass\n```\n\nPROBLÈMES (1):\n[\n  {\n    \"fichier\": \"good_code.py\",\n    \"ligne\": 1,\n    \"type\": \"general\",\n    \"severite\": \"mineur\",\n    \"description\": \"Amélioration générale du code\",\n    \"suggestion\": \"Ajouter documentation et respecter PEP8\"\n  }\n]\n\nProduis le code corrigé complet.",
+            "output_response": "# Code corrigé en mode DEV\npass",
+            "code_length_before": 31,
+            "code_length_after": 31,
+            "dev_mode": true,
+            "used_prompt_builder": true
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "c334d754-90e1-422b-925f-6f705cc0091e",
+        "timestamp": "2026-01-18T18:07:15.211628",
+        "agent": "Judge",
+        "model": "MOCK-DEV",
+        "action": "DEBUG",
+        "details": {
+            "iteration": 3,
+            "input_prompt": "Run tests on fixed code",
+            "output_response": "❌ [SIMULATION] Tests échoués",
+            "test_passed": false,
+            "changes_verified": [
+                "✅ test_sample.py: Code corrigé (31 → 31 chars)",
+                "✅ test_file.py: Code corrigé (31 → 31 chars)",
+                "✅ good_code.py: Code corrigé (31 → 31 chars)"
+            ]
+        },
+        "status": "FAILURE"
+    },
+    {
+        "id": "d03dfd12-102d-4dfa-8bb5-15c1918eabcc",
+        "timestamp": "2026-01-18T18:07:16.245188",
+        "agent": "Fixer",
+        "model": "MOCK-DEV",
+        "action": "FIX",
+        "details": {
+            "iteration": 3,
+            "file_fixed": "test_sample.py",
+            "input_prompt": "Tu es un développeur Python expert en refactoring.\n\nMISSION: Corriger du code Python selon une liste de problèmes.\n\nPRIORITÉS:\n1. BUGS: Corriger tous les bugs, ajouter gestion erreurs\n2. DOCUMENTATION: Docstrings Google Style (Description, Args, Returns, Raises)\n3. PEP8: Formatage, indentation 4 espaces, imports organisés\n4. NAMING: snake_case (fonctions/vars), PascalCase (classes)\n\nCONTRAINTES:\n- Ne jamais changer la logique métier (sauf bugs)\n- Ne jamais renommer fonctions publiques\n- Ne jamais supprimer code fonctionnel\n- Ajouter type hints Python 3.10+ (list[int], dict[str, int], int | None)\n\nFORMAT SORTIE:\nCode Python uniquement. Pas de markdown, pas d'explications, pas de commentaires sur modifications.\n\nVÉRIFICATIONS:\n- Tous bugs corrigés\n- Toutes fonctions avec docstring\n- Tous paramètres avec type hints\n- Code respecte PEP8\n- Syntaxe valide\n\nIMPORTS (ordre):\n1. Standard library\n2. (ligne vide)\n3. Tiers (pip)\n4. (ligne vide)\n5. Locaux\n\nFICHIER: test_sample.py\n\nCODE ACTUEL:\n```python\n# Code corrigé en mode DEV\npass\n```\n\nPROBLÈMES (1):\n[\n  {\n    \"fichier\": \"test_sample.py\",\n    \"ligne\": 1,\n    \"type\": \"general\",\n    \"severite\": \"mineur\",\n    \"description\": \"Amélioration générale du code\",\n    \"suggestion\": \"Ajouter documentation et respecter PEP8\"\n  }\n]\n\nProduis le code corrigé complet.",
+            "output_response": "# Code corrigé en mode DEV\npass",
+            "code_length_before": 31,
+            "code_length_after": 31,
+            "dev_mode": true,
+            "used_prompt_builder": true
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "64dad235-310d-4a8c-8b99-86a16637f6c3",
+        "timestamp": "2026-01-18T18:07:17.252940",
+        "agent": "Fixer",
+        "model": "MOCK-DEV",
+        "action": "FIX",
+        "details": {
+            "iteration": 3,
+            "file_fixed": "test_file.py",
+            "input_prompt": "Tu es un développeur Python expert en refactoring.\n\nMISSION: Corriger du code Python selon une liste de problèmes.\n\nPRIORITÉS:\n1. BUGS: Corriger tous les bugs, ajouter gestion erreurs\n2. DOCUMENTATION: Docstrings Google Style (Description, Args, Returns, Raises)\n3. PEP8: Formatage, indentation 4 espaces, imports organisés\n4. NAMING: snake_case (fonctions/vars), PascalCase (classes)\n\nCONTRAINTES:\n- Ne jamais changer la logique métier (sauf bugs)\n- Ne jamais renommer fonctions publiques\n- Ne jamais supprimer code fonctionnel\n- Ajouter type hints Python 3.10+ (list[int], dict[str, int], int | None)\n\nFORMAT SORTIE:\nCode Python uniquement. Pas de markdown, pas d'explications, pas de commentaires sur modifications.\n\nVÉRIFICATIONS:\n- Tous bugs corrigés\n- Toutes fonctions avec docstring\n- Tous paramètres avec type hints\n- Code respecte PEP8\n- Syntaxe valide\n\nIMPORTS (ordre):\n1. Standard library\n2. (ligne vide)\n3. Tiers (pip)\n4. (ligne vide)\n5. Locaux\n\nFICHIER: test_file.py\n\nCODE ACTUEL:\n```python\n# Code corrigé en mode DEV\npass\n```\n\nPROBLÈMES (1):\n[\n  {\n    \"fichier\": \"test_file.py\",\n    \"ligne\": 1,\n    \"type\": \"general\",\n    \"severite\": \"mineur\",\n    \"description\": \"Amélioration générale du code\",\n    \"suggestion\": \"Ajouter documentation et respecter PEP8\"\n  }\n]\n\nProduis le code corrigé complet.",
+            "output_response": "# Code corrigé en mode DEV\npass",
+            "code_length_before": 31,
+            "code_length_after": 31,
+            "dev_mode": true,
+            "used_prompt_builder": true
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "5f845f45-817d-4445-8c88-511b9ec636f7",
+        "timestamp": "2026-01-18T18:07:18.260199",
+        "agent": "Fixer",
+        "model": "MOCK-DEV",
+        "action": "FIX",
+        "details": {
+            "iteration": 3,
+            "file_fixed": "good_code.py",
+            "input_prompt": "Tu es un développeur Python expert en refactoring.\n\nMISSION: Corriger du code Python selon une liste de problèmes.\n\nPRIORITÉS:\n1. BUGS: Corriger tous les bugs, ajouter gestion erreurs\n2. DOCUMENTATION: Docstrings Google Style (Description, Args, Returns, Raises)\n3. PEP8: Formatage, indentation 4 espaces, imports organisés\n4. NAMING: snake_case (fonctions/vars), PascalCase (classes)\n\nCONTRAINTES:\n- Ne jamais changer la logique métier (sauf bugs)\n- Ne jamais renommer fonctions publiques\n- Ne jamais supprimer code fonctionnel\n- Ajouter type hints Python 3.10+ (list[int], dict[str, int], int | None)\n\nFORMAT SORTIE:\nCode Python uniquement. Pas de markdown, pas d'explications, pas de commentaires sur modifications.\n\nVÉRIFICATIONS:\n- Tous bugs corrigés\n- Toutes fonctions avec docstring\n- Tous paramètres avec type hints\n- Code respecte PEP8\n- Syntaxe valide\n\nIMPORTS (ordre):\n1. Standard library\n2. (ligne vide)\n3. Tiers (pip)\n4. (ligne vide)\n5. Locaux\n\nFICHIER: good_code.py\n\nCODE ACTUEL:\n```python\n# Code corrigé en mode DEV\npass\n```\n\nPROBLÈMES (1):\n[\n  {\n    \"fichier\": \"good_code.py\",\n    \"ligne\": 1,\n    \"type\": \"general\",\n    \"severite\": \"mineur\",\n    \"description\": \"Amélioration générale du code\",\n    \"suggestion\": \"Ajouter documentation et respecter PEP8\"\n  }\n]\n\nProduis le code corrigé complet.",
+            "output_response": "# Code corrigé en mode DEV\npass",
+            "code_length_before": 31,
+            "code_length_after": 31,
+            "dev_mode": true,
+            "used_prompt_builder": true
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "289c974a-7dc8-40c9-8d91-ef501390c0a2",
+        "timestamp": "2026-01-18T18:07:18.278445",
+        "agent": "Judge",
+        "model": "MOCK-DEV",
+        "action": "DEBUG",
+        "details": {
+            "iteration": 3,
+            "input_prompt": "Run tests on fixed code",
+            "output_response": "✅ [SIMULATION] Tests réussis",
+            "test_passed": true,
+            "changes_verified": [
+                "✅ test_sample.py: Code corrigé (31 → 31 chars)",
+                "✅ test_file.py: Code corrigé (31 → 31 chars)",
+                "✅ good_code.py: Code corrigé (31 → 31 chars)"
+            ]
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "acfbe54d-55d1-4619-9c28-f587574790da",
+        "timestamp": "2026-01-18T18:08:13.112153",
+        "agent": "Auditor",
+        "model": "models/gemini-flash-lite-latest",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "files_analyzed": [
+                "test_sample.py",
+                "test_file.py",
+                "good_code.py"
+            ],
+            "input_prompt": "Tu es un expert Python senior en analyse de code.\n\nMISSION: Analyser du code Python et identifier les problèmes de qualité.\n\nTYPES DE PROBLÈMES:\n1. BUGS: Division par zéro, variables non définies, erreurs de types, exceptions non gérées\n2. PEP8: Nommage incorrect, lignes >79 car, imports désorganisés, espaces manquants\n3. DOCUMENTATION: Fonctions sans docstring, format non-Google Style\n4. NAMING: Variables à une lettre, noms non descriptifs\n\nFORMAT SORTIE (STRICT):\nJSON uniquement, pas de texte, pas de markdown.\n\n{\n  \"score_qualite\": <0-10>,\n  \"problemes\": [\n    {\n      \"fichier\": \"nom.py\",\n      \"ligne\": <int>,\n      \"type\": \"bug|pep8|documentation|naming\",\n      \"severite\": \"critique|majeur|mineur\",\n      \"description\": \"<max 80 car>\",\n      \"suggestion\": \"<max 100 car>\"\n    }\n  ],\n  \"resume\": \"<max 150 car>\"\n}\n\nRÈGLES ANTI-HALLUCINATION:\n- Ne jamais inventer de problèmes inexistants\n- Vérifier chaque numéro de ligne\n- Être factuel et précis\n- Si aucun problème: {\"score_qualite\": 10, \"problemes\": [], \"resume\": \"Code conforme\"}\n\nCRITÈRES SCORE:\n10: Parfait | 8-9: Mineurs | 6-7: PEP8/doc | 4-5: Bugs mineurs | 0-3: Bugs critiques\n\nPRIORITÉ: bugs > documentation > pep8 > naming\n\nFICHIER: test_sample.py\nSCORE PYLINT: 0.0/10\n\nCODE:\n```python\n\n\n# Fichier: test_sample.py\n# Code corrigé en mode DEV\npass\n\n\n# Fichier: test_file.py\n# Code corrigé en mode DEV\npass\n\n\n# Fichier: good_code.py\n# Code corrigé en mode DEV\npass\n\n```\n\nAnalyse et produis ton rapport JSON.",
+            "output_response": "{\n  \"score_qualite\": 10,\n  \"problemes\": [],\n  \"resume\": \"Le code fourni est composé uniquement de 'pass' dans des fichiers vides ou avec seulement des commentaires. Aucun défaut structurel, bug ou problème de style n'est présent dans le contenu exécutable.\"\n}",
+            "pylint_scores": [
+                {
+                    "file": "test_sample.py",
+                    "score": 0.0,
+                    "issues": 2
+                },
+                {
+                    "file": "test_file.py",
+                    "score": 0.0,
+                    "issues": 2
+                },
+                {
+                    "file": "good_code.py",
+                    "score": 0.0,
+                    "issues": 2
+                }
+            ],
+            "code_length": 176,
+            "dev_mode": false,
+            "used_prompt_builder": true
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "06552236-a61a-45a6-af7e-4742a5b565d3",
+        "timestamp": "2026-01-18T18:08:13.665505",
+        "agent": "Fixer",
+        "model": "models/gemini-flash-lite-latest",
+        "action": "FIX",
+        "details": {
+            "iteration": 1,
+            "file_fixed": "test_sample.py",
+            "input_prompt": "Tu es un développeur Python expert en refactoring.\n\nMISSION: Corriger du code Python selon une liste de problèmes.\n\nPRIORITÉS:\n1. BUGS: Corriger tous les bugs, ajouter gestion erreurs\n2. DOCUMENTATION: Docstrings Google Style (Description, Args, Returns, Raises)\n3. PEP8: Formatage, indentation 4 espaces, imports organisés\n4. NAMING: snake_case (fonctions/vars), PascalCase (classes)\n\nCONTRAINTES:\n- Ne jamais changer la logique métier (sauf bugs)\n- Ne jamais renommer fonctions publiques\n- Ne jamai...",
+            "output_response": "ERROR: Réponse du LLM vide ou trop courte",
+            "error": "Réponse du LLM vide ou trop courte",
+            "dev_mode": false
+        },
+        "status": "FAILED"
+    },
+    {
+        "id": "d48a9259-1993-4fbb-ac75-65db58d54921",
+        "timestamp": "2026-01-18T18:08:14.177863",
+        "agent": "Fixer",
+        "model": "models/gemini-flash-lite-latest",
+        "action": "FIX",
+        "details": {
+            "iteration": 1,
+            "file_fixed": "test_file.py",
+            "input_prompt": "Tu es un développeur Python expert en refactoring.\n\nMISSION: Corriger du code Python selon une liste de problèmes.\n\nPRIORITÉS:\n1. BUGS: Corriger tous les bugs, ajouter gestion erreurs\n2. DOCUMENTATION: Docstrings Google Style (Description, Args, Returns, Raises)\n3. PEP8: Formatage, indentation 4 espaces, imports organisés\n4. NAMING: snake_case (fonctions/vars), PascalCase (classes)\n\nCONTRAINTES:\n- Ne jamais changer la logique métier (sauf bugs)\n- Ne jamais renommer fonctions publiques\n- Ne jamai...",
+            "output_response": "ERROR: Réponse du LLM vide ou trop courte",
+            "error": "Réponse du LLM vide ou trop courte",
+            "dev_mode": false
+        },
+        "status": "FAILED"
+    },
+    {
+        "id": "2de3f33c-08b0-4f5d-8804-2e60383e260b",
+        "timestamp": "2026-01-18T18:08:14.587402",
+        "agent": "Fixer",
+        "model": "models/gemini-flash-lite-latest",
+        "action": "FIX",
+        "details": {
+            "iteration": 1,
+            "file_fixed": "good_code.py",
+            "input_prompt": "Tu es un développeur Python expert en refactoring.\n\nMISSION: Corriger du code Python selon une liste de problèmes.\n\nPRIORITÉS:\n1. BUGS: Corriger tous les bugs, ajouter gestion erreurs\n2. DOCUMENTATION: Docstrings Google Style (Description, Args, Returns, Raises)\n3. PEP8: Formatage, indentation 4 espaces, imports organisés\n4. NAMING: snake_case (fonctions/vars), PascalCase (classes)\n\nCONTRAINTES:\n- Ne jamais changer la logique métier (sauf bugs)\n- Ne jamais renommer fonctions publiques\n- Ne jamai...",
+            "output_response": "ERROR: Réponse du LLM vide ou trop courte",
+            "error": "Réponse du LLM vide ou trop courte",
+            "dev_mode": false
+        },
+        "status": "FAILED"
+    },
+    {
+        "id": "923b6bba-15ff-42b0-801a-4ebdb7b63696",
+        "timestamp": "2026-01-18T18:08:14.618622",
+        "agent": "Judge",
+        "model": "models/gemini-flash-lite-latest",
+        "action": "DEBUG",
+        "details": {
+            "iteration": 2,
+            "input_prompt": "Run tests on fixed code",
+            "output_response": "❌ [SIMULATION] Tests échoués",
+            "test_passed": false,
+            "changes_verified": [
+                "❌ test_sample.py: Erreur de correction - Réponse du LLM vide ou trop courte",
+                "❌ test_file.py: Erreur de correction - Réponse du LLM vide ou trop courte",
+                "❌ good_code.py: Erreur de correction - Réponse du LLM vide ou trop courte"
+            ]
+        },
+        "status": "FAILURE"
+    },
+    {
+        "id": "11462e80-fd68-4d37-8cd5-c6d7697381bf",
+        "timestamp": "2026-01-18T18:08:15.098335",
+        "agent": "Fixer",
+        "model": "models/gemini-flash-lite-latest",
+        "action": "FIX",
+        "details": {
+            "iteration": 2,
+            "file_fixed": "test_sample.py",
+            "input_prompt": "Tu es un développeur Python expert en refactoring.\n\nMISSION: Corriger du code Python selon une liste de problèmes.\n\nPRIORITÉS:\n1. BUGS: Corriger tous les bugs, ajouter gestion erreurs\n2. DOCUMENTATION: Docstrings Google Style (Description, Args, Returns, Raises)\n3. PEP8: Formatage, indentation 4 espaces, imports organisés\n4. NAMING: snake_case (fonctions/vars), PascalCase (classes)\n\nCONTRAINTES:\n- Ne jamais changer la logique métier (sauf bugs)\n- Ne jamais renommer fonctions publiques\n- Ne jamai...",
+            "output_response": "ERROR: Réponse du LLM vide ou trop courte",
+            "error": "Réponse du LLM vide ou trop courte",
+            "dev_mode": false
+        },
+        "status": "FAILED"
+    },
+    {
+        "id": "923a2923-8579-46a1-8568-97954ffaf856",
+        "timestamp": "2026-01-18T18:08:15.508695",
+        "agent": "Fixer",
+        "model": "models/gemini-flash-lite-latest",
+        "action": "FIX",
+        "details": {
+            "iteration": 2,
+            "file_fixed": "test_file.py",
+            "input_prompt": "Tu es un développeur Python expert en refactoring.\n\nMISSION: Corriger du code Python selon une liste de problèmes.\n\nPRIORITÉS:\n1. BUGS: Corriger tous les bugs, ajouter gestion erreurs\n2. DOCUMENTATION: Docstrings Google Style (Description, Args, Returns, Raises)\n3. PEP8: Formatage, indentation 4 espaces, imports organisés\n4. NAMING: snake_case (fonctions/vars), PascalCase (classes)\n\nCONTRAINTES:\n- Ne jamais changer la logique métier (sauf bugs)\n- Ne jamais renommer fonctions publiques\n- Ne jamai...",
+            "output_response": "ERROR: Réponse du LLM vide ou trop courte",
+            "error": "Réponse du LLM vide ou trop courte",
+            "dev_mode": false
+        },
+        "status": "FAILED"
+    },
+    {
+        "id": "10d04e49-7cf9-46ee-99cf-2b5a04e4b77c",
+        "timestamp": "2026-01-18T18:08:16.020857",
+        "agent": "Fixer",
+        "model": "models/gemini-flash-lite-latest",
+        "action": "FIX",
+        "details": {
+            "iteration": 2,
+            "file_fixed": "good_code.py",
+            "input_prompt": "Tu es un développeur Python expert en refactoring.\n\nMISSION: Corriger du code Python selon une liste de problèmes.\n\nPRIORITÉS:\n1. BUGS: Corriger tous les bugs, ajouter gestion erreurs\n2. DOCUMENTATION: Docstrings Google Style (Description, Args, Returns, Raises)\n3. PEP8: Formatage, indentation 4 espaces, imports organisés\n4. NAMING: snake_case (fonctions/vars), PascalCase (classes)\n\nCONTRAINTES:\n- Ne jamais changer la logique métier (sauf bugs)\n- Ne jamais renommer fonctions publiques\n- Ne jamai...",
+            "output_response": "ERROR: Réponse du LLM vide ou trop courte",
+            "error": "Réponse du LLM vide ou trop courte",
+            "dev_mode": false
+        },
+        "status": "FAILED"
+    },
+    {
+        "id": "9abb4ad5-a313-42e0-8d7e-fcbcf7c392aa",
+        "timestamp": "2026-01-18T18:08:16.046285",
+        "agent": "Judge",
+        "model": "models/gemini-flash-lite-latest",
+        "action": "DEBUG",
+        "details": {
+            "iteration": 3,
+            "input_prompt": "Run tests on fixed code",
+            "output_response": "❌ [SIMULATION] Tests échoués",
+            "test_passed": false,
+            "changes_verified": [
+                "❌ test_sample.py: Erreur de correction - Réponse du LLM vide ou trop courte",
+                "❌ test_file.py: Erreur de correction - Réponse du LLM vide ou trop courte",
+                "❌ good_code.py: Erreur de correction - Réponse du LLM vide ou trop courte"
+            ]
+        },
+        "status": "FAILURE"
+    },
+    {
+        "id": "bc4b6c7d-8c0b-40f3-8bb4-585af74b934f",
+        "timestamp": "2026-01-18T18:08:16.532937",
+        "agent": "Fixer",
+        "model": "models/gemini-flash-lite-latest",
+        "action": "FIX",
+        "details": {
+            "iteration": 3,
+            "file_fixed": "test_sample.py",
+            "input_prompt": "Tu es un développeur Python expert en refactoring.\n\nMISSION: Corriger du code Python selon une liste de problèmes.\n\nPRIORITÉS:\n1. BUGS: Corriger tous les bugs, ajouter gestion erreurs\n2. DOCUMENTATION: Docstrings Google Style (Description, Args, Returns, Raises)\n3. PEP8: Formatage, indentation 4 espaces, imports organisés\n4. NAMING: snake_case (fonctions/vars), PascalCase (classes)\n\nCONTRAINTES:\n- Ne jamais changer la logique métier (sauf bugs)\n- Ne jamais renommer fonctions publiques\n- Ne jamai...",
+            "output_response": "ERROR: Réponse du LLM vide ou trop courte",
+            "error": "Réponse du LLM vide ou trop courte",
+            "dev_mode": false
+        },
+        "status": "FAILED"
+    },
+    {
+        "id": "8e92d240-0606-44ab-af37-631c06ff9378",
+        "timestamp": "2026-01-18T18:08:17.044662",
+        "agent": "Fixer",
+        "model": "models/gemini-flash-lite-latest",
+        "action": "FIX",
+        "details": {
+            "iteration": 3,
+            "file_fixed": "test_file.py",
+            "input_prompt": "Tu es un développeur Python expert en refactoring.\n\nMISSION: Corriger du code Python selon une liste de problèmes.\n\nPRIORITÉS:\n1. BUGS: Corriger tous les bugs, ajouter gestion erreurs\n2. DOCUMENTATION: Docstrings Google Style (Description, Args, Returns, Raises)\n3. PEP8: Formatage, indentation 4 espaces, imports organisés\n4. NAMING: snake_case (fonctions/vars), PascalCase (classes)\n\nCONTRAINTES:\n- Ne jamais changer la logique métier (sauf bugs)\n- Ne jamais renommer fonctions publiques\n- Ne jamai...",
+            "output_response": "ERROR: Réponse du LLM vide ou trop courte",
+            "error": "Réponse du LLM vide ou trop courte",
+            "dev_mode": false
+        },
+        "status": "FAILED"
+    },
+    {
+        "id": "744d988a-ea33-4073-86e3-fb5ac9b3bc4c",
+        "timestamp": "2026-01-18T18:08:17.444735",
+        "agent": "Fixer",
+        "model": "models/gemini-flash-lite-latest",
+        "action": "FIX",
+        "details": {
+            "iteration": 3,
+            "file_fixed": "good_code.py",
+            "input_prompt": "Tu es un développeur Python expert en refactoring.\n\nMISSION: Corriger du code Python selon une liste de problèmes.\n\nPRIORITÉS:\n1. BUGS: Corriger tous les bugs, ajouter gestion erreurs\n2. DOCUMENTATION: Docstrings Google Style (Description, Args, Returns, Raises)\n3. PEP8: Formatage, indentation 4 espaces, imports organisés\n4. NAMING: snake_case (fonctions/vars), PascalCase (classes)\n\nCONTRAINTES:\n- Ne jamais changer la logique métier (sauf bugs)\n- Ne jamais renommer fonctions publiques\n- Ne jamais supprimer code fonctionnel\n- Ajouter type hints Python 3.10+ (list[int], dict[str, int], int | None)\n\nFORMAT SORTIE:\nCode Python uniquement. Pas de markdown, pas d'explications, pas de commentaires sur modifications.\n\nVÉRIFICATIONS:\n- Tous bugs corrigés\n- Toutes fonctions avec docstring\n- Tous paramètres avec type hints\n- Code respecte PEP8\n- Syntaxe valide\n\nIMPORTS (ordre):\n1. Standard library\n2. (ligne vide)\n3. Tiers (pip)\n4. (ligne vide)\n5. Locaux\n\nFICHIER: good_code.py\n\nCODE ACTUEL:\n```python\n# Code corrigé en mode DEV\npass\n```\n\nPROBLÈMES (0):\n[]\n\nProduis le code corrigé complet.",
+            "output_response": "```python\n# Code corrigé en mode DEV\npass\n```",
+            "code_length_before": 31,
+            "code_length_after": 31,
+            "dev_mode": false,
+            "used_prompt_builder": true
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "3ff9b41d-ba1f-4ee1-8bc0-9df1d8a64227",
+        "timestamp": "2026-01-18T18:08:17.468794",
+        "agent": "Judge",
+        "model": "models/gemini-flash-lite-latest",
+        "action": "DEBUG",
+        "details": {
+            "iteration": 3,
+            "input_prompt": "Run tests on fixed code",
+            "output_response": "✅ [SIMULATION] Tests réussis",
+            "test_passed": true,
+            "changes_verified": [
+                "❌ test_sample.py: Erreur de correction - Réponse du LLM vide ou trop courte",
+                "❌ test_file.py: Erreur de correction - Réponse du LLM vide ou trop courte",
+                "✅ good_code.py: Code corrigé (31 → 31 chars)"
+            ]
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "9eb4e56f-0994-4a4c-8b7d-c0582f9bd696",
+        "timestamp": "2026-01-18T18:09:46.030884",
+        "agent": "Auditor",
+        "model": "models/gemini-flash-lite-latest",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "files_analyzed": [
+                "test_sample.py",
+                "test_file.py",
+                "good_code.py"
+            ],
+            "input_prompt": "Tu es un expert Python senior en analyse de code.\n\nMISSION: Analyser du code Python et identifier les problèmes de qualité.\n\nTYPES DE PROBLÈMES:\n1. BUGS: Division par zéro, variables non définies, erreurs de types, exceptions non gérées\n2. PEP8: Nommage incorrect, lignes >79 car, imports désorganisés, espaces manquants\n3. DOCUMENTATION: Fonctions sans docstring, format non-Google Style\n4. NAMING: Variables à une lettre, noms non descriptifs\n\nFORMAT SORTIE (STRICT):\nJSON uniquement, pas de texte, pas de markdown.\n\n{\n  \"score_qualite\": <0-10>,\n  \"problemes\": [\n    {\n      \"fichier\": \"nom.py\",\n      \"ligne\": <int>,\n      \"type\": \"bug|pep8|documentation|naming\",\n      \"severite\": \"critique|majeur|mineur\",\n      \"description\": \"<max 80 car>\",\n      \"suggestion\": \"<max 100 car>\"\n    }\n  ],\n  \"resume\": \"<max 150 car>\"\n}\n\nRÈGLES ANTI-HALLUCINATION:\n- Ne jamais inventer de problèmes inexistants\n- Vérifier chaque numéro de ligne\n- Être factuel et précis\n- Si aucun problème: {\"score_qualite\": 10, \"problemes\": [], \"resume\": \"Code conforme\"}\n\nCRITÈRES SCORE:\n10: Parfait | 8-9: Mineurs | 6-7: PEP8/doc | 4-5: Bugs mineurs | 0-3: Bugs critiques\n\nPRIORITÉ: bugs > documentation > pep8 > naming\n\nFICHIER: test_sample.py\nSCORE PYLINT: 0.0/10\n\nCODE:\n```python\n\n\n# Fichier: test_sample.py\n# Code corrigé en mode DEV\npass\n\n\n# Fichier: test_file.py\n# Code corrigé en mode DEV\npass\n\n\n# Fichier: good_code.py\n# Code corrigé en mode DEV\npass\n\n```\n\nAnalyse et produis ton rapport JSON.",
+            "output_response": "{\"score_qualite\": 9, \"problemes\": [{\"fichier\": \"test_sample.py\", \"ligne\": 2, \"type\": \"pep8\", \"severite\": \"mineur\", \"description\": \"Nom de fichier trop court ou non descriptif\", \"suggestion\": \"Utiliser des noms plus longs ou significatifs pour les fichiers.\"}, {\"fichier\": \"test_sample.py\", \"ligne\": 3, \"type\": \"pep8\", \"severite\": \"mineur\", \"description\": \"Ligne vide inutile après 'pass'\", \"suggestion\": \"Supprimer la ligne vide ou la remplacer par un commentaire descriptif.\"}, {\"fichier\": \"test_file.py\", \"ligne\": 6, \"type\": \"pep8\", \"severite\": \"mineur\", \"description\": \"Nom de fichier trop court ou non descriptif\", \"suggestion\": \"Utiliser des noms plus longs ou significatifs pour les fichiers.\"}, {\"fichier\": \"test_file.py\", \"ligne\": 7, \"type\": \"pep8\", \"severite\": \"mineur\", \"description\": \"Ligne vide inutile après 'pass'\", \"suggestion\": \"Supprimer la ligne vide ou la remplacer par un commentaire descriptif.\"}, {\"fichier\": \"good_code.py\", \"ligne\": 10, \"type\": \"pep8\", \"severite\": \"mineur\", \"description\": \"Nom de fichier trop court ou non descriptif\", \"suggestion\": \"Utiliser des noms plus longs ou significatifs pour les fichiers.\"}, {\"fichier\": \"good_code.py\", \"ligne\": 11, \"type\": \"pep8\", \"severite\": \"mineur\", \"description\": \"Ligne vide inutile après 'pass'\", \"suggestion\": \"Supprimer la ligne vide ou la remplacer par un commentaire descriptif.\"}], \"resume\": \"Le code est vide, mais les noms de fichiers sont courts et des espacements sont irréguliers. Aucuns bugs ou documentation manquante.\"}",
+            "pylint_scores": [
+                {
+                    "file": "test_sample.py",
+                    "score": 0.0,
+                    "issues": 2
+                },
+                {
+                    "file": "test_file.py",
+                    "score": 0.0,
+                    "issues": 2
+                },
+                {
+                    "file": "good_code.py",
+                    "score": 0.0,
+                    "issues": 2
+                }
+            ],
+            "code_length": 176,
+            "dev_mode": false,
+            "used_prompt_builder": true
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "c75e919b-6f99-4e40-a38a-7a9473144e7c",
+        "timestamp": "2026-01-18T18:09:46.646607",
+        "agent": "Fixer",
+        "model": "models/gemini-flash-lite-latest",
+        "action": "FIX",
+        "details": {
+            "iteration": 1,
+            "file_fixed": "test_sample.py",
+            "input_prompt": "Tu es un développeur Python expert en refactoring.\n\nMISSION: Corriger du code Python selon une liste de problèmes.\n\nPRIORITÉS:\n1. BUGS: Corriger tous les bugs, ajouter gestion erreurs\n2. DOCUMENTATION: Docstrings Google Style (Description, Args, Returns, Raises)\n3. PEP8: Formatage, indentation 4 espaces, imports organisés\n4. NAMING: snake_case (fonctions/vars), PascalCase (classes)\n\nCONTRAINTES:\n- Ne jamais changer la logique métier (sauf bugs)\n- Ne jamais renommer fonctions publiques\n- Ne jamai...",
+            "output_response": "ERROR: Réponse du LLM vide ou trop courte",
+            "error": "Réponse du LLM vide ou trop courte",
+            "dev_mode": false
+        },
+        "status": "FAILED"
+    },
+    {
+        "id": "0f71bf33-f537-44c6-9b4b-bff1538a5c4c",
+        "timestamp": "2026-01-18T18:09:47.054211",
+        "agent": "Fixer",
+        "model": "models/gemini-flash-lite-latest",
+        "action": "FIX",
+        "details": {
+            "iteration": 1,
+            "file_fixed": "test_file.py",
+            "input_prompt": "Tu es un développeur Python expert en refactoring.\n\nMISSION: Corriger du code Python selon une liste de problèmes.\n\nPRIORITÉS:\n1. BUGS: Corriger tous les bugs, ajouter gestion erreurs\n2. DOCUMENTATION: Docstrings Google Style (Description, Args, Returns, Raises)\n3. PEP8: Formatage, indentation 4 espaces, imports organisés\n4. NAMING: snake_case (fonctions/vars), PascalCase (classes)\n\nCONTRAINTES:\n- Ne jamais changer la logique métier (sauf bugs)\n- Ne jamais renommer fonctions publiques\n- Ne jamai...",
+            "output_response": "ERROR: Réponse du LLM vide ou trop courte",
+            "error": "Réponse du LLM vide ou trop courte",
+            "dev_mode": false
+        },
+        "status": "FAILED"
+    },
+    {
+        "id": "f5c6cc40-3ef2-4eac-adcc-8717246e61bb",
+        "timestamp": "2026-01-18T18:09:47.566677",
+        "agent": "Fixer",
+        "model": "models/gemini-flash-lite-latest",
+        "action": "FIX",
+        "details": {
+            "iteration": 1,
+            "file_fixed": "good_code.py",
+            "input_prompt": "Tu es un développeur Python expert en refactoring.\n\nMISSION: Corriger du code Python selon une liste de problèmes.\n\nPRIORITÉS:\n1. BUGS: Corriger tous les bugs, ajouter gestion erreurs\n2. DOCUMENTATION: Docstrings Google Style (Description, Args, Returns, Raises)\n3. PEP8: Formatage, indentation 4 espaces, imports organisés\n4. NAMING: snake_case (fonctions/vars), PascalCase (classes)\n\nCONTRAINTES:\n- Ne jamais changer la logique métier (sauf bugs)\n- Ne jamais renommer fonctions publiques\n- Ne jamai...",
+            "output_response": "ERROR: Réponse du LLM vide ou trop courte",
+            "error": "Réponse du LLM vide ou trop courte",
+            "dev_mode": false
+        },
+        "status": "FAILED"
+    },
+    {
+        "id": "8ac5ca15-8f12-48e1-b6be-1258fa05d118",
+        "timestamp": "2026-01-18T18:09:47.596615",
+        "agent": "Judge",
+        "model": "models/gemini-flash-lite-latest",
+        "action": "DEBUG",
+        "details": {
+            "iteration": 2,
+            "input_prompt": "Run tests on fixed code",
+            "output_response": "❌ [SIMULATION] Tests échoués",
+            "test_passed": false,
+            "changes_verified": [
+                "❌ test_sample.py: Erreur de correction - Réponse du LLM vide ou trop courte",
+                "❌ test_file.py: Erreur de correction - Réponse du LLM vide ou trop courte",
+                "❌ good_code.py: Erreur de correction - Réponse du LLM vide ou trop courte"
+            ]
+        },
+        "status": "FAILURE"
+    },
+    {
+        "id": "96010573-1876-456e-896c-98aff5277b92",
+        "timestamp": "2026-01-18T18:09:48.180722",
+        "agent": "Fixer",
+        "model": "models/gemini-flash-lite-latest",
+        "action": "FIX",
+        "details": {
+            "iteration": 2,
+            "file_fixed": "test_sample.py",
+            "input_prompt": "Tu es un développeur Python expert en refactoring.\n\nMISSION: Corriger du code Python selon une liste de problèmes.\n\nPRIORITÉS:\n1. BUGS: Corriger tous les bugs, ajouter gestion erreurs\n2. DOCUMENTATION: Docstrings Google Style (Description, Args, Returns, Raises)\n3. PEP8: Formatage, indentation 4 espaces, imports organisés\n4. NAMING: snake_case (fonctions/vars), PascalCase (classes)\n\nCONTRAINTES:\n- Ne jamais changer la logique métier (sauf bugs)\n- Ne jamais renommer fonctions publiques\n- Ne jamai...",
+            "output_response": "ERROR: Réponse du LLM vide ou trop courte",
+            "error": "Réponse du LLM vide ou trop courte",
+            "dev_mode": false
+        },
+        "status": "FAILED"
+    },
+    {
+        "id": "5d2fa85f-3814-449b-9e39-6dafdccff887",
+        "timestamp": "2026-01-18T18:09:50.127042",
+        "agent": "Fixer",
+        "model": "models/gemini-flash-lite-latest",
+        "action": "FIX",
+        "details": {
+            "iteration": 2,
+            "file_fixed": "test_file.py",
+            "input_prompt": "Tu es un développeur Python expert en refactoring.\n\nMISSION: Corriger du code Python selon une liste de problèmes.\n\nPRIORITÉS:\n1. BUGS: Corriger tous les bugs, ajouter gestion erreurs\n2. DOCUMENTATION: Docstrings Google Style (Description, Args, Returns, Raises)\n3. PEP8: Formatage, indentation 4 espaces, imports organisés\n4. NAMING: snake_case (fonctions/vars), PascalCase (classes)\n\nCONTRAINTES:\n- Ne jamais changer la logique métier (sauf bugs)\n- Ne jamais renommer fonctions publiques\n- Ne jamai...",
+            "output_response": "ERROR: Réponse du LLM vide ou trop courte",
+            "error": "Réponse du LLM vide ou trop courte",
+            "dev_mode": false
+        },
+        "status": "FAILED"
+    },
+    {
+        "id": "58cb34a2-cda5-4c61-99e0-ebe3787d4529",
+        "timestamp": "2026-01-18T18:09:50.844636",
+        "agent": "Fixer",
+        "model": "models/gemini-flash-lite-latest",
+        "action": "FIX",
+        "details": {
+            "iteration": 2,
+            "file_fixed": "good_code.py",
+            "input_prompt": "Tu es un développeur Python expert en refactoring.\n\nMISSION: Corriger du code Python selon une liste de problèmes.\n\nPRIORITÉS:\n1. BUGS: Corriger tous les bugs, ajouter gestion erreurs\n2. DOCUMENTATION: Docstrings Google Style (Description, Args, Returns, Raises)\n3. PEP8: Formatage, indentation 4 espaces, imports organisés\n4. NAMING: snake_case (fonctions/vars), PascalCase (classes)\n\nCONTRAINTES:\n- Ne jamais changer la logique métier (sauf bugs)\n- Ne jamais renommer fonctions publiques\n- Ne jamais supprimer code fonctionnel\n- Ajouter type hints Python 3.10+ (list[int], dict[str, int], int | None)\n\nFORMAT SORTIE:\nCode Python uniquement. Pas de markdown, pas d'explications, pas de commentaires sur modifications.\n\nVÉRIFICATIONS:\n- Tous bugs corrigés\n- Toutes fonctions avec docstring\n- Tous paramètres avec type hints\n- Code respecte PEP8\n- Syntaxe valide\n\nIMPORTS (ordre):\n1. Standard library\n2. (ligne vide)\n3. Tiers (pip)\n4. (ligne vide)\n5. Locaux\n\nFICHIER: good_code.py\n\nCODE ACTUEL:\n```python\n# Code corrigé en mode DEV\npass\n```\n\nPROBLÈMES (2):\n[\n  {\n    \"fichier\": \"good_code.py\",\n    \"ligne\": 10,\n    \"type\": \"pep8\",\n    \"severite\": \"mineur\",\n    \"description\": \"Nom de fichier trop court ou non descriptif\",\n    \"suggestion\": \"Utiliser des noms plus longs ou significatifs pour les fichiers.\"\n  },\n  {\n    \"fichier\": \"good_code.py\",\n    \"ligne\": 11,\n    \"type\": \"pep8\",\n    \"severite\": \"mineur\",\n    \"description\": \"Ligne vide inutile après 'pass'\",\n    \"suggestion\": \"Supprimer la ligne vide ou la remplacer par un commentaire descriptif.\"\n  }\n]\n\nProduis le code corrigé complet.",
+            "output_response": "def main() -> None:\n    \"\"\"\n    Fonction principale exécutée lorsque le script est lancé.\n\n    Cette fonction sert de point d'entrée et contient la logique de base\n    du programme. Actuellement, elle ne fait rien.\n    \"\"\"\n    pass\n\nif __name__ == \"__main__\":\n    main()",
+            "code_length_before": 31,
+            "code_length_after": 270,
+            "dev_mode": false,
+            "used_prompt_builder": true
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "8d89c82c-2f10-4f3d-b18b-04a49ca67443",
+        "timestamp": "2026-01-18T18:09:50.865081",
+        "agent": "Judge",
+        "model": "models/gemini-flash-lite-latest",
+        "action": "DEBUG",
+        "details": {
+            "iteration": 3,
+            "input_prompt": "Run tests on fixed code",
+            "output_response": "❌ [SIMULATION] Tests échoués",
+            "test_passed": false,
+            "changes_verified": [
+                "❌ test_sample.py: Erreur de correction - Réponse du LLM vide ou trop courte",
+                "❌ test_file.py: Erreur de correction - Réponse du LLM vide ou trop courte",
+                "✅ good_code.py: Code corrigé (31 → 270 chars)"
+            ]
+        },
+        "status": "FAILURE"
+    },
+    {
+        "id": "bf563764-cd0b-44ff-8319-716a89ca6cc8",
+        "timestamp": "2026-01-18T18:09:51.458660",
+        "agent": "Fixer",
+        "model": "models/gemini-flash-lite-latest",
+        "action": "FIX",
+        "details": {
+            "iteration": 3,
+            "file_fixed": "test_sample.py",
+            "input_prompt": "Tu es un développeur Python expert en refactoring.\n\nMISSION: Corriger du code Python selon une liste de problèmes.\n\nPRIORITÉS:\n1. BUGS: Corriger tous les bugs, ajouter gestion erreurs\n2. DOCUMENTATION: Docstrings Google Style (Description, Args, Returns, Raises)\n3. PEP8: Formatage, indentation 4 espaces, imports organisés\n4. NAMING: snake_case (fonctions/vars), PascalCase (classes)\n\nCONTRAINTES:\n- Ne jamais changer la logique métier (sauf bugs)\n- Ne jamais renommer fonctions publiques\n- Ne jamais supprimer code fonctionnel\n- Ajouter type hints Python 3.10+ (list[int], dict[str, int], int | None)\n\nFORMAT SORTIE:\nCode Python uniquement. Pas de markdown, pas d'explications, pas de commentaires sur modifications.\n\nVÉRIFICATIONS:\n- Tous bugs corrigés\n- Toutes fonctions avec docstring\n- Tous paramètres avec type hints\n- Code respecte PEP8\n- Syntaxe valide\n\nIMPORTS (ordre):\n1. Standard library\n2. (ligne vide)\n3. Tiers (pip)\n4. (ligne vide)\n5. Locaux\n\nFICHIER: test_sample.py\n\nCODE ACTUEL:\n```python\n# Code corrigé en mode DEV\npass\n```\n\nPROBLÈMES (2):\n[\n  {\n    \"fichier\": \"test_sample.py\",\n    \"ligne\": 2,\n    \"type\": \"pep8\",\n    \"severite\": \"mineur\",\n    \"description\": \"Nom de fichier trop court ou non descriptif\",\n    \"suggestion\": \"Utiliser des noms plus longs ou significatifs pour les fichiers.\"\n  },\n  {\n    \"fichier\": \"test_sample.py\",\n    \"ligne\": 3,\n    \"type\": \"pep8\",\n    \"severite\": \"mineur\",\n    \"description\": \"Ligne vide inutile après 'pass'\",\n    \"suggestion\": \"Supprimer la ligne vide ou la remplacer par un commentaire descriptif.\"\n  }\n]\n\nProduis le code corrigé complet.",
+            "output_response": "def main() -> None:\n    \"\"\"\n    Fonction principale du programme.\n    \"\"\"\n    pass\n\nif __name__ == \"__main__\":\n    main()",
+            "code_length_before": 31,
+            "code_length_after": 121,
+            "dev_mode": false,
+            "used_prompt_builder": true
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "874cbc94-1e4a-4012-8ff1-3d9208bcf1b3",
+        "timestamp": "2026-01-18T18:09:51.969225",
+        "agent": "Fixer",
+        "model": "models/gemini-flash-lite-latest",
+        "action": "FIX",
+        "details": {
+            "iteration": 3,
+            "file_fixed": "test_file.py",
+            "input_prompt": "Tu es un développeur Python expert en refactoring.\n\nMISSION: Corriger du code Python selon une liste de problèmes.\n\nPRIORITÉS:\n1. BUGS: Corriger tous les bugs, ajouter gestion erreurs\n2. DOCUMENTATION: Docstrings Google Style (Description, Args, Returns, Raises)\n3. PEP8: Formatage, indentation 4 espaces, imports organisés\n4. NAMING: snake_case (fonctions/vars), PascalCase (classes)\n\nCONTRAINTES:\n- Ne jamais changer la logique métier (sauf bugs)\n- Ne jamais renommer fonctions publiques\n- Ne jamai...",
+            "output_response": "ERROR: Réponse du LLM vide ou trop courte",
+            "error": "Réponse du LLM vide ou trop courte",
+            "dev_mode": false
+        },
+        "status": "FAILED"
+    },
+    {
+        "id": "c992b4ef-cd83-4957-a9b7-31812fe212d6",
+        "timestamp": "2026-01-18T18:09:52.792060",
+        "agent": "Fixer",
+        "model": "models/gemini-flash-lite-latest",
+        "action": "FIX",
+        "details": {
+            "iteration": 3,
+            "file_fixed": "good_code.py",
+            "input_prompt": "Tu es un développeur Python expert en refactoring.\n\nMISSION: Corriger du code Python selon une liste de problèmes.\n\nPRIORITÉS:\n1. BUGS: Corriger tous les bugs, ajouter gestion erreurs\n2. DOCUMENTATION: Docstrings Google Style (Description, Args, Returns, Raises)\n3. PEP8: Formatage, indentation 4 espaces, imports organisés\n4. NAMING: snake_case (fonctions/vars), PascalCase (classes)\n\nCONTRAINTES:\n- Ne jamais changer la logique métier (sauf bugs)\n- Ne jamais renommer fonctions publiques\n- Ne jamais supprimer code fonctionnel\n- Ajouter type hints Python 3.10+ (list[int], dict[str, int], int | None)\n\nFORMAT SORTIE:\nCode Python uniquement. Pas de markdown, pas d'explications, pas de commentaires sur modifications.\n\nVÉRIFICATIONS:\n- Tous bugs corrigés\n- Toutes fonctions avec docstring\n- Tous paramètres avec type hints\n- Code respecte PEP8\n- Syntaxe valide\n\nIMPORTS (ordre):\n1. Standard library\n2. (ligne vide)\n3. Tiers (pip)\n4. (ligne vide)\n5. Locaux\n\nFICHIER: good_code.py\n\nCODE ACTUEL:\n```python\ndef main() -> None:\n    \"\"\"\n    Fonction principale exécutée lorsque le script est lancé.\n\n    Cette fonction sert de point d'entrée et contient la logique de base\n    du programme. Actuellement, elle ne fait rien.\n    \"\"\"\n    pass\n\nif __name__ == \"__main__\":\n    main()\n```\n\nPROBLÈMES (2):\n[\n  {\n    \"fichier\": \"good_code.py\",\n    \"ligne\": 10,\n    \"type\": \"pep8\",\n    \"severite\": \"mineur\",\n    \"description\": \"Nom de fichier trop court ou non descriptif\",\n    \"suggestion\": \"Utiliser des noms plus longs ou significatifs pour les fichiers.\"\n  },\n  {\n    \"fichier\": \"good_code.py\",\n    \"ligne\": 11,\n    \"type\": \"pep8\",\n    \"severite\": \"mineur\",\n    \"description\": \"Ligne vide inutile après 'pass'\",\n    \"suggestion\": \"Supprimer la ligne vide ou la remplacer par un commentaire descriptif.\"\n  }\n]\n\nProduis le code corrigé complet.",
+            "output_response": "def main() -> None:\n    \"\"\"Fonction principale exécutée lorsque le script est lancé.\n\n    Cette fonction sert de point d'entrée et contient la logique de base\n    du programme. Actuellement, elle ne fait rien.\n    \"\"\"\n    pass\n\nif __name__ == \"__main__\":\n    main()",
+            "code_length_before": 270,
+            "code_length_after": 265,
+            "dev_mode": false,
+            "used_prompt_builder": true
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "9c13f83a-b4f4-42dd-b0b8-54c6e001eff1",
+        "timestamp": "2026-01-18T18:09:52.825548",
+        "agent": "Judge",
+        "model": "models/gemini-flash-lite-latest",
+        "action": "DEBUG",
+        "details": {
+            "iteration": 3,
+            "input_prompt": "Run tests on fixed code",
+            "output_response": "✅ [SIMULATION] Tests réussis",
+            "test_passed": true,
+            "changes_verified": [
+                "✅ test_sample.py: Code corrigé (31 → 121 chars)",
+                "❌ test_file.py: Erreur de correction - Réponse du LLM vide ou trop courte",
+                "✅ good_code.py: Code corrigé (270 → 265 chars)"
+            ]
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "1bd08c2c-9da1-4e08-8d74-f574797300da",
+        "timestamp": "2026-01-18T18:19:17.225281",
+        "agent": "Auditor",
+        "model": "models/gemini-flash-lite-latest",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "files_analyzed": [
+                "test_sample.py",
+                "test_file.py",
+                "good_code.py"
+            ],
+            "input_prompt": "Tu es un expert Python senior en analyse de code.\n\nMISSION: Analyser du code Python et identifier les problèmes de qualité.\n\nTYPES DE PROBLÈMES:\n1. BUGS: Division par zéro, variables non définies, erreurs de types, exceptions non gérées\n2. PEP8: Nommage incorrect, lignes >79 car, imports désorganisés, espaces manquants\n3. DOCUMENTATION: Fonctions sans docstring, format non-Google Style\n4. NAMING: Variables à une lettre, noms non descriptifs\n\nFORMAT SORTIE (STRICT):\nJSON uniquement, pas de texte, pas de markdown.\n\n{\n  \"score_qualite\": <0-10>,\n  \"problemes\": [\n    {\n      \"fichier\": \"nom.py\",\n      \"ligne\": <int>,\n      \"type\": \"bug|pep8|documentation|naming\",\n      \"severite\": \"critique|majeur|mineur\",\n      \"description\": \"<max 80 car>\",\n      \"suggestion\": \"<max 100 car>\"\n    }\n  ],\n  \"resume\": \"<max 150 car>\"\n}\n\nRÈGLES ANTI-HALLUCINATION:\n- Ne jamais inventer de problèmes inexistants\n- Vérifier chaque numéro de ligne\n- Être factuel et précis\n- Si aucun problème: {\"score_qualite\": 10, \"problemes\": [], \"resume\": \"Code conforme\"}\n\nCRITÈRES SCORE:\n10: Parfait | 8-9: Mineurs | 6-7: PEP8/doc | 4-5: Bugs mineurs | 0-3: Bugs critiques\n\nPRIORITÉ: bugs > documentation > pep8 > naming\n\nFICHIER: test_sample.py\nSCORE PYLINT: 1.7/10\n\nCODE:\n```python\n\n\n# Fichier: test_sample.py\ndef main() -> None:\n    \"\"\"\n    Fonction principale du programme.\n    \"\"\"\n    pass\n\nif __name__ == \"__main__\":\n    main()\n\n\n# Fichier: test_file.py\n# Code corrigé en mode DEV\npass\n\n\n# Fichier: good_code.py\ndef main() -> None:\n    \"\"\"Fonction principale exécutée lorsque le script est lancé.\n\n    Cette fonction sert de point d'entrée et contient la logique de base\n    du programme. Actuellement, elle ne fait rien.\n    \"\"\"\n    pass\n\nif __name__ == \"__main__\":\n    main()\n\n```\n\nAnalyse et produis ton rapport JSON.",
+            "output_response": "{\n  \"score_qualite\": 5,\n  \"problemes\": [\n    {\n      \"fichier\": \"test_sample.py\",\n      \"ligne\": 7,\n      \"type\": \"pep8\",\n      \"severite\": \"mineur\",\n      \"description\": \"La ligne est vide après la docstring de main.\",\n      \"suggestion\": \"Supprimer les lignes vides inutiles.\"\n    },\n    {\n      \"fichier\": \"test_file.py\",\n      \"ligne\": 2,\n      \"type\": \"pep8\",\n      \"severite\": \"mineur\",\n      \"description\": \"La ligne est vide après le commentaire.\",\n      \"suggestion\": \"Supprimer les lignes vides inutiles.\"\n    },\n    {\n      \"fichier\": \"good_code.py\",\n      \"ligne\": 3,\n      \"type\": \"documentation\",\n      \"severite\": \"mineur\",\n      \"description\": \"Docstring de main est trop longue (plusieurs lignes).\",\n      \"suggestion\": \"Adopter un style plus concis ou Google Style pour la première ligne.\"\n    }\n  ],\n  \"resume\": \"Le code est minimal et contient peu de logique. Les problèmes identifiés concernent principalement des lignes vides non conformes à PEP8 et une docstring non standard dans 'good_code.py'.\"\n}",
+            "pylint_scores": [
+                {
+                    "file": "test_sample.py",
+                    "score": 2.5,
+                    "issues": 3
+                },
+                {
+                    "file": "test_file.py",
+                    "score": 0.0,
+                    "issues": 2
+                },
+                {
+                    "file": "good_code.py",
+                    "score": 2.5,
+                    "issues": 3
+                }
+            ],
+            "code_length": 500,
+            "dev_mode": false,
+            "used_prompt_builder": true
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "929a1dbb-b58d-41e4-bd92-71b6b7526241",
+        "timestamp": "2026-01-18T18:28:14.981662",
+        "agent": "Auditor",
+        "model": "gemini-2.0-flash-exp",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "error": "Quota épuisé après 3 tentatives",
+            "input_prompt": "Failed before prompt creation",
+            "output_response": ""
+        },
+        "status": "FAILED"
+    },
+    {
+        "id": "87ad7d16-414d-41e1-aee5-29bd66bddc1d",
+        "timestamp": "2026-01-18T18:28:15.049188",
+        "agent": "Judge",
+        "model": "gemini-2.0-flash-exp",
+        "action": "DEBUG",
+        "details": {
+            "iteration": 1,
+            "input_prompt": "Run tests on fixed code",
+            "output_response": "❌ [SIMULATION] Tests échoués",
+            "test_passed": false,
+            "changes_verified": [
+                "Aucun rapport d'audit disponible"
+            ]
+        },
+        "status": "FAILURE"
+    },
+    {
+        "id": "ad697297-57d6-4ac5-8397-dc69ffa0f7c9",
+        "timestamp": "2026-01-18T18:40:17.685185",
+        "agent": "Auditor",
+        "model": "MOCK-DEV",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "files_analyzed": [
+                "test_sample.py",
+                "test_file.py",
+                "good_code.py"
+            ],
+            "input_prompt": "Tu es un expert Python senior en analyse de code.\n\nMISSION: Analyser du code Python et identifier les problèmes de qualité.\n\nTYPES DE PROBLÈMES:\n1. BUGS: Division par zéro, variables non définies, erreurs de types, exceptions non gérées\n2. PEP8: Nommage incorrect, lignes >79 car, imports désorganisés, espaces manquants\n3. DOCUMENTATION: Fonctions sans docstring, format non-Google Style\n4. NAMING: Variables à une lettre, noms non descriptifs\n\nFORMAT SORTIE (STRICT):\nJSON uniquement, pas de texte, pas de markdown.\n\n{\n  \"score_qualite\": <0-10>,\n  \"problemes\": [\n    {\n      \"fichier\": \"nom.py\",\n      \"ligne\": <int>,\n      \"type\": \"bug|pep8|documentation|naming\",\n      \"severite\": \"critique|majeur|mineur\",\n      \"description\": \"<max 80 car>\",\n      \"suggestion\": \"<max 100 car>\"\n    }\n  ],\n  \"resume\": \"<max 150 car>\"\n}\n\nRÈGLES ANTI-HALLUCINATION:\n- Ne jamais inventer de problèmes inexistants\n- Vérifier chaque numéro de ligne\n- Être factuel et précis\n- Si aucun problème: {\"score_qualite\": 10, \"problemes\": [], \"resume\": \"Code conforme\"}\n\nCRITÈRES SCORE:\n10: Parfait | 8-9: Mineurs | 6-7: PEP8/doc | 4-5: Bugs mineurs | 0-3: Bugs critiques\n\nPRIORITÉ: bugs > documentation > pep8 > naming\n\nFICHIER: test_sample.py\nSCORE PYLINT ACTUEL: 1.7/10\n\nCODE À ANALYSER:\n\n\n# Fichier: test_sample.py\ndef main() -> None:\n    \"\"\"\n    Fonction principale du programme.\n    \"\"\"\n    pass\n\nif __name__ == \"__main__\":\n    main()\n\n\n# Fichier: test_file.py\n# Code corrigé en mode DEV\npass\n\n\n# Fichier: good_code.py\ndef main() -> None:\n    \"\"\"Fonction principale exécutée lorsque le script est lancé.\n\n    Cette fonction sert de point d'entrée et contient la logique de base\n    du programme. Actuellement, elle ne fait rien.\n    \"\"\"\n    pass\n\nif __name__ == \"__main__\":\n    main()\n\n\nRetourne ton analyse au format JSON strict (pas de markdown, pas de texte avant/après).",
+            "output_response": "# Mock response",
+            "pylint_scores": [
+                {
+                    "file": "test_sample.py",
+                    "score": 2.5,
+                    "issues": 3
+                },
+                {
+                    "file": "test_file.py",
+                    "score": 0.0,
+                    "issues": 2
+                },
+                {
+                    "file": "good_code.py",
+                    "score": 2.5,
+                    "issues": 3
+                }
+            ],
+            "code_length": 500,
+            "dev_mode": true,
+            "used_prompt_builder": true
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "bdd0c84d-ea82-47ea-a226-470671c766d4",
+        "timestamp": "2026-01-18T18:40:18.242050",
+        "agent": "Fixer",
+        "model": "MOCK-DEV",
+        "action": "FIX",
+        "details": {
+            "iteration": 1,
+            "file_fixed": "test_sample.py",
+            "input_prompt": "Tu es un développeur Python expert en refactoring.\n\nMISSION: Corriger du code Python selon une liste de problèmes.\n\nPRIORITÉS:\n1. BUGS: Corriger tous les bugs, ajouter gestion erreurs\n2. DOCUMENTATION: Docstrings Google Style (Description, Args, Returns, Raises)\n3. PEP8: Formatage, indentation 4 espaces, imports organisés\n4. NAMING: snake_case (fonctions/vars), PascalCase (classes)\n\nCONTRAINTES:\n- Ne jamais changer la logique métier (sauf bugs)\n- Ne jamais renommer fonctions publiques\n- Ne jamais supprimer code fonctionnel\n- Ajouter type hints Python 3.10+ (list[int], dict[str, int], int | None)\n\nFORMAT SORTIE:\nCode Python uniquement. Pas de markdown, pas d'explications, pas de commentaires sur modifications.\n\nVÉRIFICATIONS:\n- Tous bugs corrigés\n- Toutes fonctions avec docstring\n- Tous paramètres avec type hints\n- Code respecte PEP8\n- Syntaxe valide\n\nIMPORTS (ordre):\n1. Standard library\n2. (ligne vide)\n3. Tiers (pip)\n4. (ligne vide)\n5. Locaux\n\nFICHIER: test_sample.py\n\nCODE À CORRIGER:\ndef main() -> None:\n    \"\"\"\n    Fonction principale du programme.\n    \"\"\"\n    pass\n\nif __name__ == \"__main__\":\n    main()\n\nPROBLÈMES DÉTECTÉS (1):\n[\n  {\n    \"fichier\": \"test_sample.py\",\n    \"ligne\": 1,\n    \"type\": \"general\",\n    \"severite\": \"majeur\",\n    \"description\": \"Code nécessite refactoring général\",\n    \"suggestion\": \"Voir rapport d'audit complet\"\n  }\n]\n\nINSTRUCTIONS:\n1. Lis le code ci-dessus\n2. Corrige tous les problèmes listés\n3. Ajoute docstrings Google-style manquantes\n4. Assure-toi que le code compile sans erreur\n5. Retourne UNIQUEMENT le code corrigé complet\n\nIMPORTANT:\n- NE mets PAS de ```python ou ```\n- NE mets PAS d'explications\n- Retourne DIRECTEMENT le code corrigé\n- Le code doit commencer par import, def, class, ou #\n\nCODE CORRIGÉ DU FICHIER test_sample.py:\n",
+            "output_response": "# Mock response",
+            "code_length_before": 121,
+            "code_length_after": 15,
+            "dev_mode": true,
+            "used_prompt_builder": true
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "3f4a24fc-213f-437c-8b74-ff169eb06e49",
+        "timestamp": "2026-01-18T18:40:18.753661",
+        "agent": "Fixer",
+        "model": "MOCK-DEV",
+        "action": "FIX",
+        "details": {
+            "iteration": 1,
+            "file_fixed": "test_file.py",
+            "input_prompt": "Tu es un développeur Python expert en refactoring.\n\nMISSION: Corriger du code Python selon une liste de problèmes.\n\nPRIORITÉS:\n1. BUGS: Corriger tous les bugs, ajouter gestion erreurs\n2. DOCUMENTATION: Docstrings Google Style (Description, Args, Returns, Raises)\n3. PEP8: Formatage, indentation 4 espaces, imports organisés\n4. NAMING: snake_case (fonctions/vars), PascalCase (classes)\n\nCONTRAINTES:\n- Ne jamais changer la logique métier (sauf bugs)\n- Ne jamais renommer fonctions publiques\n- Ne jamais supprimer code fonctionnel\n- Ajouter type hints Python 3.10+ (list[int], dict[str, int], int | None)\n\nFORMAT SORTIE:\nCode Python uniquement. Pas de markdown, pas d'explications, pas de commentaires sur modifications.\n\nVÉRIFICATIONS:\n- Tous bugs corrigés\n- Toutes fonctions avec docstring\n- Tous paramètres avec type hints\n- Code respecte PEP8\n- Syntaxe valide\n\nIMPORTS (ordre):\n1. Standard library\n2. (ligne vide)\n3. Tiers (pip)\n4. (ligne vide)\n5. Locaux\n\nFICHIER: test_file.py\n\nCODE À CORRIGER:\n# Code corrigé en mode DEV\npass\n\nPROBLÈMES DÉTECTÉS (1):\n[\n  {\n    \"fichier\": \"test_file.py\",\n    \"ligne\": 1,\n    \"type\": \"general\",\n    \"severite\": \"majeur\",\n    \"description\": \"Code nécessite refactoring général\",\n    \"suggestion\": \"Voir rapport d'audit complet\"\n  }\n]\n\nINSTRUCTIONS:\n1. Lis le code ci-dessus\n2. Corrige tous les problèmes listés\n3. Ajoute docstrings Google-style manquantes\n4. Assure-toi que le code compile sans erreur\n5. Retourne UNIQUEMENT le code corrigé complet\n\nIMPORTANT:\n- NE mets PAS de ```python ou ```\n- NE mets PAS d'explications\n- Retourne DIRECTEMENT le code corrigé\n- Le code doit commencer par import, def, class, ou #\n\nCODE CORRIGÉ DU FICHIER test_file.py:\n",
+            "output_response": "# Mock response",
+            "code_length_before": 31,
+            "code_length_after": 15,
+            "dev_mode": true,
+            "used_prompt_builder": true
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "cd1ba98e-b279-407b-b03b-17c557a82811",
+        "timestamp": "2026-01-18T18:40:19.265506",
+        "agent": "Fixer",
+        "model": "MOCK-DEV",
+        "action": "FIX",
+        "details": {
+            "iteration": 1,
+            "file_fixed": "good_code.py",
+            "input_prompt": "Tu es un développeur Python expert en refactoring.\n\nMISSION: Corriger du code Python selon une liste de problèmes.\n\nPRIORITÉS:\n1. BUGS: Corriger tous les bugs, ajouter gestion erreurs\n2. DOCUMENTATION: Docstrings Google Style (Description, Args, Returns, Raises)\n3. PEP8: Formatage, indentation 4 espaces, imports organisés\n4. NAMING: snake_case (fonctions/vars), PascalCase (classes)\n\nCONTRAINTES:\n- Ne jamais changer la logique métier (sauf bugs)\n- Ne jamais renommer fonctions publiques\n- Ne jamais supprimer code fonctionnel\n- Ajouter type hints Python 3.10+ (list[int], dict[str, int], int | None)\n\nFORMAT SORTIE:\nCode Python uniquement. Pas de markdown, pas d'explications, pas de commentaires sur modifications.\n\nVÉRIFICATIONS:\n- Tous bugs corrigés\n- Toutes fonctions avec docstring\n- Tous paramètres avec type hints\n- Code respecte PEP8\n- Syntaxe valide\n\nIMPORTS (ordre):\n1. Standard library\n2. (ligne vide)\n3. Tiers (pip)\n4. (ligne vide)\n5. Locaux\n\nFICHIER: good_code.py\n\nCODE À CORRIGER:\ndef main() -> None:\n    \"\"\"Fonction principale exécutée lorsque le script est lancé.\n\n    Cette fonction sert de point d'entrée et contient la logique de base\n    du programme. Actuellement, elle ne fait rien.\n    \"\"\"\n    pass\n\nif __name__ == \"__main__\":\n    main()\n\nPROBLÈMES DÉTECTÉS (1):\n[\n  {\n    \"fichier\": \"good_code.py\",\n    \"ligne\": 1,\n    \"type\": \"general\",\n    \"severite\": \"majeur\",\n    \"description\": \"Code nécessite refactoring général\",\n    \"suggestion\": \"Voir rapport d'audit complet\"\n  }\n]\n\nINSTRUCTIONS:\n1. Lis le code ci-dessus\n2. Corrige tous les problèmes listés\n3. Ajoute docstrings Google-style manquantes\n4. Assure-toi que le code compile sans erreur\n5. Retourne UNIQUEMENT le code corrigé complet\n\nIMPORTANT:\n- NE mets PAS de ```python ou ```\n- NE mets PAS d'explications\n- Retourne DIRECTEMENT le code corrigé\n- Le code doit commencer par import, def, class, ou #\n\nCODE CORRIGÉ DU FICHIER good_code.py:\n",
+            "output_response": "# Mock response",
+            "code_length_before": 265,
+            "code_length_after": 15,
+            "dev_mode": true,
+            "used_prompt_builder": true
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "e88f1242-8fd8-4219-8447-e1169fb66612",
+        "timestamp": "2026-01-18T18:40:19.294025",
+        "agent": "Judge",
+        "model": "MOCK-DEV",
+        "action": "DEBUG",
+        "details": {
+            "iteration": 2,
+            "input_prompt": "Run tests on fixed code",
+            "output_response": "❌ [SIMULATION] Tests échoués",
+            "test_passed": false,
+            "changes_verified": [
+                "✅ test_sample.py: Code corrigé (121 → 15 chars)",
+                "✅ test_file.py: Code corrigé (31 → 15 chars)",
+                "✅ good_code.py: Code corrigé (265 → 15 chars)"
+            ]
+        },
+        "status": "FAILURE"
+    },
+    {
+        "id": "3dbcb0d4-1eab-4a44-9a2c-0b737eac4627",
+        "timestamp": "2026-01-18T18:40:19.832582",
+        "agent": "Fixer",
+        "model": "MOCK-DEV",
+        "action": "FIX",
+        "details": {
+            "iteration": 2,
+            "file_fixed": "test_sample.py",
+            "input_prompt": "Tu es un développeur Python expert en refactoring.\n\nMISSION: Corriger du code Python selon une liste de problèmes.\n\nPRIORITÉS:\n1. BUGS: Corriger tous les bugs, ajouter gestion erreurs\n2. DOCUMENTATION: Docstrings Google Style (Description, Args, Returns, Raises)\n3. PEP8: Formatage, indentation 4 espaces, imports organisés\n4. NAMING: snake_case (fonctions/vars), PascalCase (classes)\n\nCONTRAINTES:\n- Ne jamais changer la logique métier (sauf bugs)\n- Ne jamais renommer fonctions publiques\n- Ne jamais supprimer code fonctionnel\n- Ajouter type hints Python 3.10+ (list[int], dict[str, int], int | None)\n\nFORMAT SORTIE:\nCode Python uniquement. Pas de markdown, pas d'explications, pas de commentaires sur modifications.\n\nVÉRIFICATIONS:\n- Tous bugs corrigés\n- Toutes fonctions avec docstring\n- Tous paramètres avec type hints\n- Code respecte PEP8\n- Syntaxe valide\n\nIMPORTS (ordre):\n1. Standard library\n2. (ligne vide)\n3. Tiers (pip)\n4. (ligne vide)\n5. Locaux\n\nFICHIER: test_sample.py\n\nCODE À CORRIGER:\n# Mock response\n\nPROBLÈMES DÉTECTÉS (1):\n[\n  {\n    \"fichier\": \"test_sample.py\",\n    \"ligne\": 1,\n    \"type\": \"general\",\n    \"severite\": \"majeur\",\n    \"description\": \"Code nécessite refactoring général\",\n    \"suggestion\": \"Voir rapport d'audit complet\"\n  }\n]\n\nINSTRUCTIONS:\n1. Lis le code ci-dessus\n2. Corrige tous les problèmes listés\n3. Ajoute docstrings Google-style manquantes\n4. Assure-toi que le code compile sans erreur\n5. Retourne UNIQUEMENT le code corrigé complet\n\nIMPORTANT:\n- NE mets PAS de ```python ou ```\n- NE mets PAS d'explications\n- Retourne DIRECTEMENT le code corrigé\n- Le code doit commencer par import, def, class, ou #\n\nCODE CORRIGÉ DU FICHIER test_sample.py:\n",
+            "output_response": "# Mock response",
+            "code_length_before": 15,
+            "code_length_after": 15,
+            "dev_mode": true,
+            "used_prompt_builder": true
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "b96a5530-c87e-43bb-8d7b-6274862cc3f5",
+        "timestamp": "2026-01-18T18:40:20.345420",
+        "agent": "Fixer",
+        "model": "MOCK-DEV",
+        "action": "FIX",
+        "details": {
+            "iteration": 2,
+            "file_fixed": "test_file.py",
+            "input_prompt": "Tu es un développeur Python expert en refactoring.\n\nMISSION: Corriger du code Python selon une liste de problèmes.\n\nPRIORITÉS:\n1. BUGS: Corriger tous les bugs, ajouter gestion erreurs\n2. DOCUMENTATION: Docstrings Google Style (Description, Args, Returns, Raises)\n3. PEP8: Formatage, indentation 4 espaces, imports organisés\n4. NAMING: snake_case (fonctions/vars), PascalCase (classes)\n\nCONTRAINTES:\n- Ne jamais changer la logique métier (sauf bugs)\n- Ne jamais renommer fonctions publiques\n- Ne jamais supprimer code fonctionnel\n- Ajouter type hints Python 3.10+ (list[int], dict[str, int], int | None)\n\nFORMAT SORTIE:\nCode Python uniquement. Pas de markdown, pas d'explications, pas de commentaires sur modifications.\n\nVÉRIFICATIONS:\n- Tous bugs corrigés\n- Toutes fonctions avec docstring\n- Tous paramètres avec type hints\n- Code respecte PEP8\n- Syntaxe valide\n\nIMPORTS (ordre):\n1. Standard library\n2. (ligne vide)\n3. Tiers (pip)\n4. (ligne vide)\n5. Locaux\n\nFICHIER: test_file.py\n\nCODE À CORRIGER:\n# Mock response\n\nPROBLÈMES DÉTECTÉS (1):\n[\n  {\n    \"fichier\": \"test_file.py\",\n    \"ligne\": 1,\n    \"type\": \"general\",\n    \"severite\": \"majeur\",\n    \"description\": \"Code nécessite refactoring général\",\n    \"suggestion\": \"Voir rapport d'audit complet\"\n  }\n]\n\nINSTRUCTIONS:\n1. Lis le code ci-dessus\n2. Corrige tous les problèmes listés\n3. Ajoute docstrings Google-style manquantes\n4. Assure-toi que le code compile sans erreur\n5. Retourne UNIQUEMENT le code corrigé complet\n\nIMPORTANT:\n- NE mets PAS de ```python ou ```\n- NE mets PAS d'explications\n- Retourne DIRECTEMENT le code corrigé\n- Le code doit commencer par import, def, class, ou #\n\nCODE CORRIGÉ DU FICHIER test_file.py:\n",
+            "output_response": "# Mock response",
+            "code_length_before": 15,
+            "code_length_after": 15,
+            "dev_mode": true,
+            "used_prompt_builder": true
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "b86e6cc7-e7ec-4eed-8935-9c2830a0df29",
+        "timestamp": "2026-01-18T18:40:20.858525",
+        "agent": "Fixer",
+        "model": "MOCK-DEV",
+        "action": "FIX",
+        "details": {
+            "iteration": 2,
+            "file_fixed": "good_code.py",
+            "input_prompt": "Tu es un développeur Python expert en refactoring.\n\nMISSION: Corriger du code Python selon une liste de problèmes.\n\nPRIORITÉS:\n1. BUGS: Corriger tous les bugs, ajouter gestion erreurs\n2. DOCUMENTATION: Docstrings Google Style (Description, Args, Returns, Raises)\n3. PEP8: Formatage, indentation 4 espaces, imports organisés\n4. NAMING: snake_case (fonctions/vars), PascalCase (classes)\n\nCONTRAINTES:\n- Ne jamais changer la logique métier (sauf bugs)\n- Ne jamais renommer fonctions publiques\n- Ne jamais supprimer code fonctionnel\n- Ajouter type hints Python 3.10+ (list[int], dict[str, int], int | None)\n\nFORMAT SORTIE:\nCode Python uniquement. Pas de markdown, pas d'explications, pas de commentaires sur modifications.\n\nVÉRIFICATIONS:\n- Tous bugs corrigés\n- Toutes fonctions avec docstring\n- Tous paramètres avec type hints\n- Code respecte PEP8\n- Syntaxe valide\n\nIMPORTS (ordre):\n1. Standard library\n2. (ligne vide)\n3. Tiers (pip)\n4. (ligne vide)\n5. Locaux\n\nFICHIER: good_code.py\n\nCODE À CORRIGER:\n# Mock response\n\nPROBLÈMES DÉTECTÉS (1):\n[\n  {\n    \"fichier\": \"good_code.py\",\n    \"ligne\": 1,\n    \"type\": \"general\",\n    \"severite\": \"majeur\",\n    \"description\": \"Code nécessite refactoring général\",\n    \"suggestion\": \"Voir rapport d'audit complet\"\n  }\n]\n\nINSTRUCTIONS:\n1. Lis le code ci-dessus\n2. Corrige tous les problèmes listés\n3. Ajoute docstrings Google-style manquantes\n4. Assure-toi que le code compile sans erreur\n5. Retourne UNIQUEMENT le code corrigé complet\n\nIMPORTANT:\n- NE mets PAS de ```python ou ```\n- NE mets PAS d'explications\n- Retourne DIRECTEMENT le code corrigé\n- Le code doit commencer par import, def, class, ou #\n\nCODE CORRIGÉ DU FICHIER good_code.py:\n",
+            "output_response": "# Mock response",
+            "code_length_before": 15,
+            "code_length_after": 15,
+            "dev_mode": true,
+            "used_prompt_builder": true
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "350872be-68a3-4c84-96d7-5862b8646205",
+        "timestamp": "2026-01-18T18:40:20.912735",
+        "agent": "Judge",
+        "model": "MOCK-DEV",
+        "action": "DEBUG",
+        "details": {
+            "iteration": 3,
+            "input_prompt": "Run tests on fixed code",
+            "output_response": "❌ [SIMULATION] Tests échoués",
+            "test_passed": false,
+            "changes_verified": [
+                "✅ test_sample.py: Code corrigé (15 → 15 chars)",
+                "✅ test_file.py: Code corrigé (15 → 15 chars)",
+                "✅ good_code.py: Code corrigé (15 → 15 chars)"
+            ]
+        },
+        "status": "FAILURE"
+    },
+    {
+        "id": "5d45290c-f19a-4a45-8fe0-90e8e0e0be16",
+        "timestamp": "2026-01-18T18:40:21.466850",
+        "agent": "Fixer",
+        "model": "MOCK-DEV",
+        "action": "FIX",
+        "details": {
+            "iteration": 3,
+            "file_fixed": "test_sample.py",
+            "input_prompt": "Tu es un développeur Python expert en refactoring.\n\nMISSION: Corriger du code Python selon une liste de problèmes.\n\nPRIORITÉS:\n1. BUGS: Corriger tous les bugs, ajouter gestion erreurs\n2. DOCUMENTATION: Docstrings Google Style (Description, Args, Returns, Raises)\n3. PEP8: Formatage, indentation 4 espaces, imports organisés\n4. NAMING: snake_case (fonctions/vars), PascalCase (classes)\n\nCONTRAINTES:\n- Ne jamais changer la logique métier (sauf bugs)\n- Ne jamais renommer fonctions publiques\n- Ne jamais supprimer code fonctionnel\n- Ajouter type hints Python 3.10+ (list[int], dict[str, int], int | None)\n\nFORMAT SORTIE:\nCode Python uniquement. Pas de markdown, pas d'explications, pas de commentaires sur modifications.\n\nVÉRIFICATIONS:\n- Tous bugs corrigés\n- Toutes fonctions avec docstring\n- Tous paramètres avec type hints\n- Code respecte PEP8\n- Syntaxe valide\n\nIMPORTS (ordre):\n1. Standard library\n2. (ligne vide)\n3. Tiers (pip)\n4. (ligne vide)\n5. Locaux\n\nFICHIER: test_sample.py\n\nCODE À CORRIGER:\n# Mock response\n\nPROBLÈMES DÉTECTÉS (1):\n[\n  {\n    \"fichier\": \"test_sample.py\",\n    \"ligne\": 1,\n    \"type\": \"general\",\n    \"severite\": \"majeur\",\n    \"description\": \"Code nécessite refactoring général\",\n    \"suggestion\": \"Voir rapport d'audit complet\"\n  }\n]\n\nINSTRUCTIONS:\n1. Lis le code ci-dessus\n2. Corrige tous les problèmes listés\n3. Ajoute docstrings Google-style manquantes\n4. Assure-toi que le code compile sans erreur\n5. Retourne UNIQUEMENT le code corrigé complet\n\nIMPORTANT:\n- NE mets PAS de ```python ou ```\n- NE mets PAS d'explications\n- Retourne DIRECTEMENT le code corrigé\n- Le code doit commencer par import, def, class, ou #\n\nCODE CORRIGÉ DU FICHIER test_sample.py:\n",
+            "output_response": "# Mock response",
+            "code_length_before": 15,
+            "code_length_after": 15,
+            "dev_mode": true,
+            "used_prompt_builder": true
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "86ba8c3e-890c-48fe-ae2b-71eb833912b4",
+        "timestamp": "2026-01-18T18:40:21.981202",
+        "agent": "Fixer",
+        "model": "MOCK-DEV",
+        "action": "FIX",
+        "details": {
+            "iteration": 3,
+            "file_fixed": "test_file.py",
+            "input_prompt": "Tu es un développeur Python expert en refactoring.\n\nMISSION: Corriger du code Python selon une liste de problèmes.\n\nPRIORITÉS:\n1. BUGS: Corriger tous les bugs, ajouter gestion erreurs\n2. DOCUMENTATION: Docstrings Google Style (Description, Args, Returns, Raises)\n3. PEP8: Formatage, indentation 4 espaces, imports organisés\n4. NAMING: snake_case (fonctions/vars), PascalCase (classes)\n\nCONTRAINTES:\n- Ne jamais changer la logique métier (sauf bugs)\n- Ne jamais renommer fonctions publiques\n- Ne jamais supprimer code fonctionnel\n- Ajouter type hints Python 3.10+ (list[int], dict[str, int], int | None)\n\nFORMAT SORTIE:\nCode Python uniquement. Pas de markdown, pas d'explications, pas de commentaires sur modifications.\n\nVÉRIFICATIONS:\n- Tous bugs corrigés\n- Toutes fonctions avec docstring\n- Tous paramètres avec type hints\n- Code respecte PEP8\n- Syntaxe valide\n\nIMPORTS (ordre):\n1. Standard library\n2. (ligne vide)\n3. Tiers (pip)\n4. (ligne vide)\n5. Locaux\n\nFICHIER: test_file.py\n\nCODE À CORRIGER:\n# Mock response\n\nPROBLÈMES DÉTECTÉS (1):\n[\n  {\n    \"fichier\": \"test_file.py\",\n    \"ligne\": 1,\n    \"type\": \"general\",\n    \"severite\": \"majeur\",\n    \"description\": \"Code nécessite refactoring général\",\n    \"suggestion\": \"Voir rapport d'audit complet\"\n  }\n]\n\nINSTRUCTIONS:\n1. Lis le code ci-dessus\n2. Corrige tous les problèmes listés\n3. Ajoute docstrings Google-style manquantes\n4. Assure-toi que le code compile sans erreur\n5. Retourne UNIQUEMENT le code corrigé complet\n\nIMPORTANT:\n- NE mets PAS de ```python ou ```\n- NE mets PAS d'explications\n- Retourne DIRECTEMENT le code corrigé\n- Le code doit commencer par import, def, class, ou #\n\nCODE CORRIGÉ DU FICHIER test_file.py:\n",
+            "output_response": "# Mock response",
+            "code_length_before": 15,
+            "code_length_after": 15,
+            "dev_mode": true,
+            "used_prompt_builder": true
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "4525c3f2-cfe5-43db-b468-85a2e656aefe",
+        "timestamp": "2026-01-18T18:40:22.494170",
+        "agent": "Fixer",
+        "model": "MOCK-DEV",
+        "action": "FIX",
+        "details": {
+            "iteration": 3,
+            "file_fixed": "good_code.py",
+            "input_prompt": "Tu es un développeur Python expert en refactoring.\n\nMISSION: Corriger du code Python selon une liste de problèmes.\n\nPRIORITÉS:\n1. BUGS: Corriger tous les bugs, ajouter gestion erreurs\n2. DOCUMENTATION: Docstrings Google Style (Description, Args, Returns, Raises)\n3. PEP8: Formatage, indentation 4 espaces, imports organisés\n4. NAMING: snake_case (fonctions/vars), PascalCase (classes)\n\nCONTRAINTES:\n- Ne jamais changer la logique métier (sauf bugs)\n- Ne jamais renommer fonctions publiques\n- Ne jamais supprimer code fonctionnel\n- Ajouter type hints Python 3.10+ (list[int], dict[str, int], int | None)\n\nFORMAT SORTIE:\nCode Python uniquement. Pas de markdown, pas d'explications, pas de commentaires sur modifications.\n\nVÉRIFICATIONS:\n- Tous bugs corrigés\n- Toutes fonctions avec docstring\n- Tous paramètres avec type hints\n- Code respecte PEP8\n- Syntaxe valide\n\nIMPORTS (ordre):\n1. Standard library\n2. (ligne vide)\n3. Tiers (pip)\n4. (ligne vide)\n5. Locaux\n\nFICHIER: good_code.py\n\nCODE À CORRIGER:\n# Mock response\n\nPROBLÈMES DÉTECTÉS (1):\n[\n  {\n    \"fichier\": \"good_code.py\",\n    \"ligne\": 1,\n    \"type\": \"general\",\n    \"severite\": \"majeur\",\n    \"description\": \"Code nécessite refactoring général\",\n    \"suggestion\": \"Voir rapport d'audit complet\"\n  }\n]\n\nINSTRUCTIONS:\n1. Lis le code ci-dessus\n2. Corrige tous les problèmes listés\n3. Ajoute docstrings Google-style manquantes\n4. Assure-toi que le code compile sans erreur\n5. Retourne UNIQUEMENT le code corrigé complet\n\nIMPORTANT:\n- NE mets PAS de ```python ou ```\n- NE mets PAS d'explications\n- Retourne DIRECTEMENT le code corrigé\n- Le code doit commencer par import, def, class, ou #\n\nCODE CORRIGÉ DU FICHIER good_code.py:\n",
+            "output_response": "# Mock response",
+            "code_length_before": 15,
+            "code_length_after": 15,
+            "dev_mode": true,
+            "used_prompt_builder": true
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "2f759730-7837-411f-bcb4-071f20855def",
+        "timestamp": "2026-01-18T18:40:22.524845",
+        "agent": "Judge",
+        "model": "MOCK-DEV",
+        "action": "DEBUG",
+        "details": {
+            "iteration": 3,
+            "input_prompt": "Run tests on fixed code",
+            "output_response": "✅ [SIMULATION] Tests réussis",
+            "test_passed": true,
+            "changes_verified": [
+                "✅ test_sample.py: Code corrigé (15 → 15 chars)",
+                "✅ test_file.py: Code corrigé (15 → 15 chars)",
+                "✅ good_code.py: Code corrigé (15 → 15 chars)"
+            ]
+        },
+        "status": "SUCCESS"
     }
 ]

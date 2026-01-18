@@ -7,8 +7,8 @@ load_dotenv()
 GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 
 # Model Configuration - Use the FULL model name with 'models/' prefix!
-DEFAULT_MODEL = "models/gemini-flash-lite-latest"
-
+# Au lieu de gemini-flash-lite-latest
+DEFAULT_MODEL = "gemini-2.0-flash-exp"  # Rate limit plus élevé
 
 # Fallback models in order of preference
 FALLBACK_MODELS = [

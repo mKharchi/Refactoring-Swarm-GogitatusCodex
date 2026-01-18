@@ -21,33 +21,10 @@ load_dotenv()
 if not DEV_MODE:
     genai.configure(api_key=os.getenv('GOOGLE_API_KEY'))
 
+# Au début du fichier
+from src.utils.llm_helper import call_gemini_with_retry
 
-def call_gemini_with_retry(prompt: str, model_name: str = DEFAULT_MODEL, max_retries: int = MAX_RETRIES) -> str:
-    """Calls Gemini API with retry logic or returns mock in DEV_MODE."""
-    if DEV_MODE:
-        print("🔧 MODE DÉVELOPPEMENT - Utilisation de réponse simulée")
-        time.sleep(1)
-        return MOCK_AUDIT_RESPONSE
-    
-    for attempt in range(max_retries):
-        try:
-            model = genai.GenerativeModel(model_name)
-            response = model.generate_content(prompt)
-            return response.text
-            
-        except exceptions.ResourceExhausted as e:
-            if attempt < max_retries - 1:
-                wait_time = RETRY_DELAY * (attempt + 1)
-                print(f"⏱️  Rate limit atteint. Attente de {wait_time}s...")
-                time.sleep(wait_time)
-            else:
-                raise Exception(f"Quota épuisé après {max_retries} tentatives")
-                
-        except Exception as e:
-            raise Exception(f"Erreur Gemini: {str(e)}")
-    
-    raise Exception("Max retries reached")
-
+# SUPPRIMEZ la définition de call_gemini_with_retry
 
 def auditor_agent(state: AgentState) -> AgentState:
     """The Auditor Agent: Analyzes code and creates a refactoring plan."""

@@ -1,5 +1,6 @@
 import os
 import time
+import json
 import google.generativeai as genai
 from dotenv import load_dotenv
 from google.api_core import exceptions
@@ -23,34 +24,63 @@ if not DEV_MODE:
     genai.configure(api_key=os.getenv('GOOGLE_API_KEY'))
 
 
-def call_gemini_with_retry(prompt: str, model_name: str = DEFAULT_MODEL, max_retries: int = MAX_RETRIES) -> str:
-    """Calls Gemini API with retry logic or returns mock in DEV_MODE."""
-    if DEV_MODE:
-        print("🔧 MODE DÉVELOPPEMENT - Utilisation de réponse simulée")
-        time.sleep(1)
-        # Mock response: return the same code with a comment
-        return "# Code corrigé en mode DEV\npass"
+def extraire_problemes_fichier(audit_report: str, filepath: str) -> list:
+    """
+    Extrait les problèmes concernant un fichier spécifique du rapport d'audit.
     
-    for attempt in range(max_retries):
-        try:
-            model = genai.GenerativeModel(model_name)
-            response = model.generate_content(prompt)
-            return response.text
-            
-        except exceptions.ResourceExhausted as e:
-            if attempt < max_retries - 1:
-                wait_time = RETRY_DELAY * (attempt + 1)
-                print(f"⏱️  Rate limit atteint. Attente de {wait_time}s...")
-                time.sleep(wait_time)
-            else:
-                raise Exception(f"Quota épuisé après {max_retries} tentatives")
-                
-        except Exception as e:
-            raise Exception(f"Erreur Gemini: {str(e)}")
+    Args:
+        audit_report: Le rapport d'audit complet (peut être JSON ou texte)
+        filepath: Le nom du fichier à filtrer
     
-    raise Exception("Max retries reached")
+    Returns:
+        Liste des problèmes pour ce fichier
+    """
+    try:
+        # Essayer de parser le rapport comme JSON
+        data = json.loads(audit_report)
+        
+        # Si c'est la structure attendue avec "problemes"
+        if isinstance(data, dict) and "problemes" in data:
+            problemes = data["problemes"]
+            # Filtrer pour ce fichier
+            return [
+                p for p in problemes 
+                if p.get("fichier", "") == filepath or filepath in p.get("fichier", "")
+            ]
+        
+        # Si c'est déjà une liste de problèmes
+        elif isinstance(data, list):
+            return [
+                p for p in data 
+                if p.get("fichier", "") == filepath or filepath in p.get("fichier", "")
+            ]
+    
+    except (json.JSONDecodeError, KeyError):
+        # Si ce n'est pas du JSON valide, créer un problème générique
+        print(f"  ⚠️  Impossible de parser le rapport d'audit comme JSON")
+        return [{
+            "fichier": filepath,
+            "ligne": 1,
+            "type": "general",
+            "severite": "majeur",
+            "description": "Code nécessite refactoring général",
+            "suggestion": "Voir rapport d'audit complet"
+        }]
+    
+    # Si aucun problème trouvé pour ce fichier
+    return [{
+        "fichier": filepath,
+        "ligne": 1,
+        "type": "general",
+        "severite": "mineur",
+        "description": "Amélioration générale du code",
+        "suggestion": "Ajouter documentation et respecter PEP8"
+    }]
 
+# Au début du fichier
+from src.utils.llm_helper import call_gemini_with_retry
 
+# SUPPRIMEZ la définition de call_gemini_with_retry
 def fixer_agent(state: AgentState) -> AgentState:
     """The Fixer Agent: Reads audit report and fixes code file by file."""
     print("\n🔧 === AGENT CORRECTEUR ACTIVÉ ===")
@@ -92,10 +122,14 @@ def fixer_agent(state: AgentState) -> AgentState:
             # Build prompt using optimized builder if available
             if USE_PROMPT_BUILDER:
                 print("  📝 Utilisation du prompt builder optimisé")
+                
+                # Parse audit report to extract problems for this file
+                problemes_fichier = extraire_problemes_fichier(audit_report, filepath)
+                
                 system_prompt, user_prompt = prompt_builder.construire_prompt_correcteur(
                     code_source=original_code,
-                    nom_fichier=filepath,
-                    rapport_audit=audit_report
+                    problemes=problemes_fichier,
+                    nom_fichier=filepath
                 )
                 full_prompt = f"{system_prompt}\n\n{user_prompt}"
                 
@@ -105,35 +139,40 @@ def fixer_agent(state: AgentState) -> AgentState:
             else:
                 # Fallback to simple prompt
                 print("  ⚠️  Utilisation du prompt simple (fallback)")
-                full_prompt = f"""Tu es un expert Python spécialisé en refactoring et correction de code.
+                full_prompt = f"""Tu es un expert Python. Ton rôle est de corriger et améliorer du code Python.
 
-RAPPORT D'AUDIT GLOBAL:
-{audit_report}
+FICHIER: {filepath}
 
-FICHIER À CORRIGER: {filepath}
-CODE ACTUEL:
-```python
+CODE ORIGINAL À CORRIGER:
 {original_code}
-```
 
-INSTRUCTIONS CRITIQUES:
-1. Analyse le rapport d'audit et identifie les problèmes concernant CE fichier spécifique
-2. Corrige TOUS les problèmes identifiés (bugs, PEP8, documentation manquante)
-3. Ajoute des docstrings complètes pour toutes les fonctions et classes
-4. Assure-toi que le code reste fonctionnel et garde la même logique
-5. Retourne UNIQUEMENT le code Python corrigé, SANS explications, SANS markdown
+PROBLÈMES DÉTECTÉS (Rapport d'audit):
+{audit_report[:500] if len(audit_report) > 500 else audit_report}
 
-IMPORTANT: 
-- NE retourne QUE le code Python pur
-- PAS de ```python``` ou autres balises markdown
-- PAS d'explications avant ou après
-- Juste le code corrigé complet
+INSTRUCTIONS:
+1. Lis attentivement le code original ci-dessus
+2. Corrige tous les bugs et problèmes identifiés
+3. Ajoute des docstrings Google-style pour toutes les fonctions et classes
+4. Assure-toi que le code respecte PEP 8
+5. Garde exactement la même fonctionnalité
+
+IMPORTANT - FORMAT DE RÉPONSE:
+- Retourne TOUT le code corrigé du fichier {filepath}
+- Ne retourne QUE le code Python, rien d'autre
+- Ne mets PAS de ```python ou ``` 
+- Ne mets PAS d'explications
+- Commence directement par le code (import, def, class, etc.)
+
+CODE CORRIGÉ:
 """
             
             # Call Gemini to fix the code
             print(f"  🤖 Appel à Gemini ({DEFAULT_MODEL if not DEV_MODE else 'MOCK'})...")
             try:
                 fixed_code_response = call_gemini_with_retry(full_prompt, model_name=DEFAULT_MODEL)
+                
+                # Debug: Print first 200 chars of response
+                print(f"  🔍 Réponse LLM (premiers 200 chars): {fixed_code_response[:200]}")
                 
                 # Clean the response (remove markdown if present)
                 fixed_code = fixed_code_response.strip()
@@ -146,10 +185,45 @@ IMPORTANT:
                     parts = fixed_code.split("```")
                     if len(parts) >= 3:
                         fixed_code = parts[1].strip()
+                    elif len(parts) == 2:
+                        # Sometimes it's just ```\ncode (no closing ```)
+                        fixed_code = parts[1].strip()
                 
-                # Verify we got actual code (basic sanity check)
-                if not fixed_code or len(fixed_code) < 10:
+                # Remove any leading explanation text
+                # Look for common code starting patterns
+                if not any(fixed_code.lstrip().startswith(x) for x in 
+                          ['import ', 'from ', 'def ', 'class ', '#', '@', '"""', "'''"]):
+                    # Try to find where code actually starts
+                    lines = fixed_code.split('\n')
+                    for i, line in enumerate(lines):
+                        stripped = line.strip()
+                        if any(stripped.startswith(x) for x in 
+                              ['import ', 'from ', 'def ', 'class ', '#', '@', '"""', "'''"]):
+                            fixed_code = '\n'.join(lines[i:])
+                            break
+                
+                # Verify we got actual code (more lenient check)
+                fixed_code = fixed_code.strip()
+                
+                # Accept "pass" as valid minimal code (it compiles)
+                if fixed_code == "pass":
+                    # This is too minimal, but let's try to compile it
+                    print(f"  ⚠️  LLM a retourné seulement 'pass' - probablement une erreur")
+                    # We'll let it fail the next check
+                
+                if not fixed_code or len(fixed_code) < 4:
+                    print(f"  ⚠️  Code trop court: {len(fixed_code)} chars")
+                    print(f"  📄 Réponse complète: {fixed_code_response[:500]}")
                     raise Exception("Réponse du LLM vide ou trop courte")
+                
+                # Try to compile to verify it's valid Python
+                try:
+                    compile(fixed_code, '<string>', 'exec')
+                    print(f"  ✅ Syntaxe Python valide ({len(fixed_code)} chars)")
+                except SyntaxError as e:
+                    print(f"  ❌ Erreur de syntaxe Python: {e}")
+                    print(f"  📄 Code reçu: {fixed_code[:200]}")
+                    raise Exception(f"Code invalide: {e}")
                 
                 # Write fixed code to file
                 write_success = write_file(filepath, fixed_code)
