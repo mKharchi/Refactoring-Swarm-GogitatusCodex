@@ -12,7 +12,7 @@ def call_gemini_with_retry(
     prompt: str, 
     model_name: str = DEFAULT_MODEL, 
     max_retries: int = MAX_RETRIES,
-    mock_response: str = "# Mock response"
+    mock_response: str = None
 ) -> str:
     """
     Calls Gemini API with retry logic or returns mock in DEV_MODE.
@@ -35,6 +35,11 @@ def call_gemini_with_retry(
     if DEV_MODE:
         print("  🔧 MODE DEV - Réponse simulée")
         time.sleep(0.5)  # Simulate API delay
+        
+        # If no mock provided, return a generic one
+        if mock_response is None:
+            mock_response = "# Mock response in DEV mode"
+        
         return mock_response
     
     for attempt in range(max_retries):
@@ -49,7 +54,7 @@ def call_gemini_with_retry(
                 time.sleep(wait_time)
             else:
                 # Normal delay between calls: 4s allows ~15 calls/minute
-                time.sleep(4)
+                time.sleep(7)
             
             # Make the API call
             response = model.generate_content(prompt)
