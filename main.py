@@ -15,9 +15,9 @@ def main():
         print(f"❌ Dossier {args.target_dir} introuvable.")
         sys.exit(1)
 
-    print(f"🚀 DEMARRAGE SUR : {args.target_dir}")
+    print(f"DEMARRAGE SUR : {args.target_dir}")
     log_experiment("System", "STARTUP", f"Target: {args.target_dir}", "INFO")
-    print("✅ MISSION_COMPLETE")
+    print("MISSION_COMPLETE")
 
 if __name__ == "__main__":
     main()

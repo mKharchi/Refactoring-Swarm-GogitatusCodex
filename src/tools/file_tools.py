@@ -2,7 +2,7 @@ from pathlib import Path
 
 SANDBOX_ROOT = Path("sandbox/target").resolve()
 
-'--------------------------------------------------------------------------------------------'
+#--------------------------------------------------
 def resolve_safe_path(relative_path: str) -> Path:
     path = (SANDBOX_ROOT / relative_path).resolve()
 
@@ -10,7 +10,7 @@ def resolve_safe_path(relative_path: str) -> Path:
         raise PermissionError("Access outside sandbox is forbidden")
 
     return path
-'----------------------------------------------------------------------------------------------'
+#-----------------------------------------------------------------------------
 def read_file(relative_path: str) -> dict:
     try:
         path = resolve_safe_path(relative_path)
@@ -29,7 +29,7 @@ def read_file(relative_path: str) -> dict:
     except Exception as e:
         return {"success": False, "error": str(e)}
     
-'---------------------------------------------------------------------------------------'
+#---------------------------------------------------------------------------
 def write_file(relative_path: str, content: str) -> dict:
     try:
         path = resolve_safe_path(relative_path)
@@ -42,7 +42,7 @@ def write_file(relative_path: str, content: str) -> dict:
     except Exception as e:
         return {"success": False, "error": str(e)}
 
-'-----------------------------------------------------------------------------------------'
+#______________________________________________________________________
 
 def list_files(relative_path: str = ".") -> dict:
     try:
@@ -65,5 +65,5 @@ def list_files(relative_path: str = ".") -> dict:
     except Exception as e:
         return {"success": False, "error": str(e)}
     
-'-------------------------------------------------------------------------------------------'
+
 
