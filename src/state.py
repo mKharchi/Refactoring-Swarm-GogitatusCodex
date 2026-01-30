@@ -34,3 +34,5 @@ class AgentState(TypedDict):
     iteration_count: int               # Current iteration (max 10)
     status: str                        # "running", "success", "failed", "max_iterations"
     error_message: Optional[str]       # If something goes wrong
+    repo_type: Optional[List[str]]  # ← ADD THIS
+    # I want to make this field as an array of strings

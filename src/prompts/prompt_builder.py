@@ -59,7 +59,10 @@ class PromptBuilder:
         code_source: str,
         problemes: List[Dict],
         nom_fichier: str,
-        feedback_tests: str = ""
+        feedback_tests: str = "",
+        repo_type: Optional[List[str]] = None,
+        fix_strategy: Optional[str] = None
+
     ) -> Tuple[str, str]:
         """
         Construit le prompt pour l'agent correcteur.
@@ -79,10 +82,24 @@ class PromptBuilder:
         
         # Filtrer pour garder seulement problèmes critiques/majeurs
         # (optimisation tokens)
-        problemes_prioritaires = [
-            p for p in problemes
-            if p.get("severite") in ["critique", "majeur"]
-        ]
+        
+        #help me out here, let him use the repo_type and fix_strategy to improve the filtering
+        
+        if repo_type and "SYNTAX" in repo_type:
+            problemes_prioritaires = [
+                p for p in problemes
+                if p.get("type") == "syntax_error"
+            ]
+        elif fix_strategy and fix_strategy.get("aggressive", False):
+            problemes_prioritaires = [
+                p for p in problemes
+                if p.get("severite") in ["critique", "majeur"]
+            ]
+        else:
+            problemes_prioritaires = [
+                p for p in problemes
+                if p.get("severite") in ["critique", "majeur"]
+            ]
         
         # Si aucun prioritaire, prendre tous (max 10 pour éviter saturation)
         if not problemes_prioritaires:

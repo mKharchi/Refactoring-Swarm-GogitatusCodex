@@ -78,6 +78,41 @@ def extraire_problemes_fichier(audit_report: str, filepath: str) -> list:
         "suggestion": "Ajouter documentation et respecter PEP8"
     }]
 
+
+
+
+def fixer_strategy_from_repo_type(repo_type: list) -> dict:
+    """
+    Détermine la stratégie de correction selon le type de dépôt.
+    """
+    strategy = {
+        "focus": [],
+        "aggressive": False,
+        "docstrings": True,
+        "pep8": True
+    }
+
+    if "SYNTAX" in repo_type:
+        strategy["focus"].append("syntax_errors")
+        strategy["aggressive"] = True
+
+    if "LOGIC" in repo_type:
+        strategy["focus"].append("business_logic")
+
+    if "DOCUMENTATION" in repo_type:
+        strategy["focus"].append("documentation")
+        strategy["docstrings"] = True
+        strategy["pep8"] = False  # avoid wasting effort
+
+    if "NAMING" in repo_type:
+        strategy["focus"].append("naming")
+        strategy["pep8"] = True
+
+    if "CLEAN" in repo_type:
+        strategy["focus"].append("minor_improvements")
+
+    return strategy
+
 # Au début du fichier
 from src.utils.llm_helper import call_gemini_with_retry
 
@@ -99,9 +134,17 @@ def fixer_agent(state: AgentState) -> AgentState:
         test_output = state.get("test_output", "")
         test_passed = state.get("test_passed", True)
         iteration = state.get("iteration_count", 1)
+        repo_type = state.get("repo_type", ["MIXED"])
+        if isinstance(repo_type, str):
+            repo_type = [repo_type]
+
+        print(f"🏷️ Repo type(s): {repo_type}")
+
 
 # Construire le contexte de feedback
         feedback_context = ""
+        fix_strategy = fixer_strategy_from_repo_type(repo_type)
+        print(f"🧠 Fix strategy: {fix_strategy}")
 
         if iteration > 1 and test_output:
     # Extraire seulement les lignes d'erreur
@@ -174,11 +217,16 @@ Continue d'améliorer le code en te basant sur le rapport d'audit.
         code_source=original_code,
         problemes=problemes_fichier,
         nom_fichier=filepath,
-        feedback_tests=feedback_context
+        feedback_tests=feedback_context,
+        repo_type=repo_type,
+        fix_strategy=fix_strategy    
     )
+            
                 full_prompt = system_prompt + "\n\n" + user_prompt
 
             else:
+                #here too we add the feedback_context and the repo_type and the fix_strategy
+
                 print("  ⚠️  Utilisation du prompt simple (fallback)")
                 full_prompt = f"""Tu es un expert Python. Ton rôle est de corriger et améliorer du code Python.
 
@@ -188,6 +236,10 @@ FICHIER: {filepath}
 
 CODE ORIGINAL À CORRIGER:
 {original_code}
+
+INFORMATIONS SUPPLÉMENTAIRES:
+- Stratégie de correction: {fix_strategy}
+- Le dossier de code est de type: {', '.join(repo_type)}
 
 PROBLÈMES DÉTECTÉS (Rapport d'audit):
 {audit_report[:500] if len(audit_report) > 500 else audit_report}
