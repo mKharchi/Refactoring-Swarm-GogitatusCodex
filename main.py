@@ -117,7 +117,8 @@ def initialize_state(target_dir: str) -> AgentState:
         "pylint_score_after": None,
         "iteration_count": 0,
         "status": "running",
-        "error_message": None
+        "error_message": None,
+        "repo_type": None
     }
 
 

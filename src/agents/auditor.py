@@ -61,9 +61,124 @@ def clean_json_response(response: str) -> str:
     return response_clean
 
 
+def classify_repository_type(json_data: dict, pylint_results: list) -> list:
+    """
+    Classifie le type de dépôt basé sur l'analyse des problèmes.
+    
+    Amélioration: Évite les classifications incohérentes comme ["CLEAN", "NAMING"]
+    et priorise correctement les problèmes.
+    
+    Args:
+        json_data: Données JSON de l'audit contenant les problèmes
+        pylint_results: Résultats pylint pour calculer le score moyen
+        
+    Returns:
+        Type de dépôt: Liste contenant un ou plusieurs types (SYNTAX, LOGIC, NAMING, DOCUMENTATION, CLEAN)
+    """
+    problemes = json_data.get("problemes", [])
+    
+    # Calculer le score pylint moyen
+    avg_score = 0
+    if pylint_results:
+        avg_score = sum(r["score"] for r in pylint_results) / len(pylint_results)
+    
+    # Compter les types de problèmes
+    type_counts = {
+        "bug": 0,
+        "pep8": 0,
+        "documentation": 0,
+        "naming": 0
+    }
+    
+    severity_counts = {
+        "critique": 0,
+        "majeur": 0,
+        "mineur": 0
+    }
+    
+    for prob in problemes:
+        prob_type = prob.get("type", "").lower()
+        severity = prob.get("severite", "").lower()
+        
+        if prob_type in type_counts:
+            type_counts[prob_type] += 1
+        
+        if severity in severity_counts:
+            severity_counts[severity] += 1
+    
+    total_problems = sum(type_counts.values())
+    
+    # ============ CAS SPÉCIAL: AUCUN PROBLÈME ============
+    if total_problems == 0:
+        return ["CLEAN"]
+    
+    # ============ DÉTECTION DES TYPES ============
+    detected_types = []
+    
+    # 1. SYNTAX: Erreurs syntaxiques bloquantes (PRIORITÉ 1)
+    syntax_keywords = ["syntax", "import", "indentation", "undefined", "name error", "importerror"]
+    syntax_bugs = sum(
+        1 for prob in problemes 
+        if prob.get("type") == "bug" 
+        and any(kw in prob.get("description", "").lower() for kw in syntax_keywords)
+    )
+    has_critical_bugs = severity_counts["critique"] > 0 and type_counts["bug"] > 0
+    
+    if syntax_bugs > 0 or (has_critical_bugs and avg_score < 3.0):
+        detected_types.append("SYNTAX")
+        return detected_types  # SYNTAX masque tous les autres types
+    
+    # 2. LOGIC: Bugs fonctionnels (PRIORITÉ 2)
+    # Ne trigger que s'il y a des bugs ET pas d'autres problèmes dominants
+    if type_counts["bug"] > 0 and avg_score >= 4.0:
+        # Vérifier que ce ne sont pas juste des problèmes de documentation
+        if type_counts["documentation"] < total_problems * 0.7:  # Docs ≠ majorité
+            detected_types.append("LOGIC")
+    
+    # 3. DOCUMENTATION: Code fonctionne mais pas documenté (PRIORITÉ 3)
+    # Doit avoir AU MOINS des problèmes de documentation ET peu/pas de bugs
+    if type_counts["documentation"] > 0 and type_counts["bug"] == 0:
+        # Si documentation est le seul ou majoritaire problème
+        if type_counts["documentation"] >= total_problems * 0.5:
+            detected_types.append("DOCUMENTATION")
+    
+    # 4. NAMING: Code fonctionne mais mal nommé (PRIORITÉ 4)
+    # Doit avoir des problèmes de nommage ET pas de bugs/docs manquantes
+    if type_counts["naming"] > 0:
+        # Ne ajouter NAMING que si:
+        # - Pas de bugs
+        # - Ou très peu de docs manquantes
+        if type_counts["bug"] == 0 and type_counts["documentation"] < total_problems * 0.5:
+            if type_counts["naming"] >= total_problems * 0.3:
+                detected_types.append("NAMING")
+    
+    # ============ FALLBACK: MIXED ============
+    if not detected_types:
+        # S'il y a des problèmes mais aucun type ne s'applique nettement
+        detected_types.append("MIXED")
+    
+    # ============ DÉDUPLICATIONS ET COHÉRENCE ============
+    # Supprimer les contradictions
+    if "CLEAN" in detected_types and len(detected_types) > 1:
+        detected_types.remove("CLEAN")
+    
+    # Si SYNTAX ou LOGIC détecté, supprimer les types cosmétiques
+    if "SYNTAX" in detected_types or "LOGIC" in detected_types:
+        if "DOCUMENTATION" in detected_types and type_counts["documentation"] < 3:
+            detected_types.remove("DOCUMENTATION")
+    
+    # Log debugging
+    print(f"  📊 Problèmes comptés: {type_counts}")
+    print(f"  📊 Sévérités: {severity_counts}")
+    print(f"  📊 Score pylint moyen: {avg_score:.2f}")
+    print(f"  📊 Types détectés: {detected_types}")
+    
+    return detected_types if detected_types else ["MIXED"]
+
+
 def auditor_agent(state: AgentState) -> AgentState:
     """The Auditor Agent: Analyzes code and creates a refactoring plan."""
-    print("\n🔍 === AGENT AUDITEUR ACTIVÉ ===")
+    print("\n🔍 === AGENT AUDITEUR ACTIVÉ (v1.1.0 - Avec classification dépôt) ===")
     
     if DEV_MODE:
         print("🔧 MODE DÉVELOPPEMENT ACTIVÉ")
@@ -120,13 +235,53 @@ def auditor_agent(state: AgentState) -> AgentState:
             print(f"💰 Tokens estimés: ~{cout.get('tokens_total_input', 0)} entrée, "
                   f"~{cout.get('tokens_total_output_estime', 0)} sortie")
         else:
-            # Fallback to simple prompt
-            print("⚠️  Utilisation du prompt simple (fallback)")
-            full_prompt = f"""Tu es un expert Python. Analyse ce code et identifie les problèmes:
+            # Fallback to enhanced prompt with repo classification
+            print("⚠️  Utilisation du prompt amélioré (fallback)")
+            full_prompt = f"""Tu es un expert Python senior en analyse de code.
 
+MISSION: Analyser du code Python et identifier les problèmes de qualité.
+
+TYPES DE PROBLÈMES:
+1. BUGS: Division par zéro, variables non définies, erreurs de types, exceptions non gérées
+2. PEP8: Nommage incorrect, lignes >79 car, imports désorganisés, espaces manquants
+3. DOCUMENTATION: Fonctions sans docstring, format non-Google Style
+4. NAMING: Variables à une lettre, noms non descriptifs
+
+FORMAT SORTIE (STRICT):
+JSON uniquement, pas de texte, pas de markdown.
+
+{{
+  "score_qualite": <0-10>,
+  "problemes": [
+    {{
+      "fichier": "nom.py",
+      "ligne": <int>,
+      "type": "bug|pep8|documentation|naming",
+      "severite": "critique|majeur|mineur",
+      "description": "<max 80 car>",
+      "suggestion": "<max 100 car>"
+    }}
+  ],
+  "resume": "<max 150 car>"
+}}
+
+RÈGLES ANTI-HALLUCINATION:
+- Ne jamais inventer de problèmes inexistants
+- Vérifier chaque numéro de ligne
+- Être factuel et précis
+- Si aucun problème: {{"score_qualite": 10, "problemes": [], "resume": "Code conforme"}}
+
+CRITÈRES SCORE:
+10: Parfait | 8-9: Mineurs | 6-7: PEP8/doc | 4-5: Bugs mineurs | 0-3: Bugs critiques
+
+PRIORITÉ: bugs > documentation > pep8 > naming
+
+CODE À ANALYSER:
 {all_code}
 
-Retourne un rapport JSON avec les bugs, problèmes PEP8, et manques de documentation."""
+Score Pylint actuel: {avg_score:.2f}/10 si disponible
+
+Retourne UNIQUEMENT le JSON."""
         
         # Call Gemini
         print(f"🤖 Appel à Gemini ({DEFAULT_MODEL if not DEV_MODE else 'MOCK'})...")
@@ -164,11 +319,25 @@ Retourne un rapport JSON avec les bugs, problèmes PEP8, et manques de documenta
                     json_data["problemes"] = []
                 if "resume" not in json_data:
                     json_data["resume"] = "Analyse partielle"
-                
-                # Re-serialize with defaults
-                audit_report_clean = json.dumps(json_data, ensure_ascii=False, indent=2)
             
-            # Use cleaned version
+            # ===== NOUVEAUTÉ v1.1.0: Classification du dépôt =====
+            print("\n🏷️  Classification du type de dépôt...")
+            repo_type = classify_repository_type(json_data, pylint_results)
+            json_data["repo_type"] = repo_type
+            
+            print(f"📊 Type de dépôt détecté: {repo_type}")
+            
+            # Ajouter des statistiques de classification dans les logs
+            type_stats = {}
+            for prob in json_data.get("problemes", []):
+                prob_type = prob.get("type", "unknown")
+                type_stats[prob_type] = type_stats.get(prob_type, 0) + 1
+            
+            print(f"📈 Distribution des problèmes: {type_stats}")
+            # ===================================================
+            
+            # Re-serialize with repo_type
+            audit_report_clean = json.dumps(json_data, ensure_ascii=False, indent=2)
             audit_report = audit_report_clean
             
         except json.JSONDecodeError as e:
@@ -187,7 +356,8 @@ Retourne un rapport JSON avec les bugs, problèmes PEP8, et manques de documenta
                     "description": "Erreur parsing réponse LLM - analyse manuelle requise",
                     "suggestion": "Vérifier le rapport brut dans les logs"
                 }],
-                "resume": "Erreur de parsing - rapport incomplet"
+                "resume": "Erreur de parsing - rapport incomplet",
+                "repo_type": "MIXED"  # Default safe value
             }
             audit_report = json.dumps(fallback_json, ensure_ascii=False, indent=2)
             print(f"⚠️  Utilisation d'un rapport fallback")
@@ -205,7 +375,9 @@ Retourne un rapport JSON avec les bugs, problèmes PEP8, et manques de documenta
                 "code_length": len(all_code),
                 "dev_mode": DEV_MODE,
                 "used_prompt_builder": USE_PROMPT_BUILDER,
-                "json_valid": True
+                "json_valid": True,
+                "repo_type": json_data.get("repo_type", "UNKNOWN"),  # Log the classification
+                "version": "1.1.0"
             },
             status="SUCCESS"
         )
@@ -213,10 +385,12 @@ Retourne un rapport JSON avec les bugs, problèmes PEP8, et manques de documenta
         # Update state
         state["audit_report"] = audit_report
         state["iteration_count"] = 1
+        state["repo_type"] = json_data.get("repo_type", "MIXED")  # Store in state
         
         print("✅ Analyse de l'auditeur terminée")
         if avg_score:
             print(f"📊 Score Pylint moyen: {avg_score:.2f}/10")
+        print(f"🏷️  Type de dépôt: {state['repo_type']}")
         
         return state
         
@@ -230,7 +404,8 @@ Retourne un rapport JSON avec les bugs, problèmes PEP8, et manques de documenta
             details={
                 "error": str(e),
                 "input_prompt": "Failed before prompt creation",
-                "output_response": ""
+                "output_response": "",
+                "version": "1.1.0"
             },
             status="FAILED"
         )
