@@ -61,23 +61,24 @@ def clean_json_response(response: str) -> str:
     return response_clean
 
 
-def classify_repository_type(json_data: dict, pylint_results: list) -> list: # update this function so that it can return an array of strings of the types of problem we have found
+def classify_repository_type(json_data: dict, pylint_results: list) -> list:
     """
     Classifie le type de dépôt basé sur l'analyse des problèmes.
+    
+    Amélioration: Évite les classifications incohérentes comme ["CLEAN", "NAMING"]
+    et priorise correctement les problèmes.
     
     Args:
         json_data: Données JSON de l'audit contenant les problèmes
         pylint_results: Résultats pylint pour calculer le score moyen
         
     Returns:
-        Type de dépôt: LOGIC, NAMING, SYNTAX, DOCUMENTATION, ou MIXED
+        Type de dépôt: Liste contenant un ou plusieurs types (SYNTAX, LOGIC, NAMING, DOCUMENTATION, CLEAN)
     """
     problemes = json_data.get("problemes", [])
     
     # Calculer le score pylint moyen
     avg_score = 0
-
-    type: list = []
     if pylint_results:
         avg_score = sum(r["score"] for r in pylint_results) / len(pylint_results)
     
@@ -107,51 +108,72 @@ def classify_repository_type(json_data: dict, pylint_results: list) -> list: # u
     
     total_problems = sum(type_counts.values())
     
-    # Cas spécial: aucun problème
+    # ============ CAS SPÉCIAL: AUCUN PROBLÈME ============
     if total_problems == 0:
-        return ["CLEAN"]  # ou pourrait être un nouveau type "CLEAN" here you can return an array with "CLEAN"
+        return ["CLEAN"]
     
-    # SYNTAX: Erreurs critiques bloquantes
-    # Si bugs critiques détectés → probablement SYNTAX
-    if severity_counts["critique"] > 0 and type_counts["bug"] > 0:
-        # Vérifier si les bugs sont de type syntaxe
-        syntax_keywords = ["syntax", "import", "indentation", "undefined", "name error"]
-        syntax_bugs = sum(
-            1 for prob in problemes 
-            if prob.get("type") == "bug" 
-            and any(kw in prob.get("description", "").lower() for kw in syntax_keywords)
-        )
-        
-        if syntax_bugs > 0 or avg_score < 3.0:
-            type.append("SYNTAX")
+    # ============ DÉTECTION DES TYPES ============
+    detected_types = []
     
-    # LOGIC: Bugs fonctionnels avec score correct
-    # Si score pylint >= 6.5 ET bugs présents → LOGIC
-    if avg_score >= 6.5 and type_counts["bug"] > 0:
-        type.append("LOGIC")
+    # 1. SYNTAX: Erreurs syntaxiques bloquantes (PRIORITÉ 1)
+    syntax_keywords = ["syntax", "import", "indentation", "undefined", "name error", "importerror"]
+    syntax_bugs = sum(
+        1 for prob in problemes 
+        if prob.get("type") == "bug" 
+        and any(kw in prob.get("description", "").lower() for kw in syntax_keywords)
+    )
+    has_critical_bugs = severity_counts["critique"] > 0 and type_counts["bug"] > 0
     
-    if not type:
-        type.append("CLEAN")  # Default
+    if syntax_bugs > 0 or (has_critical_bugs and avg_score < 3.0):
+        detected_types.append("SYNTAX")
+        return detected_types  # SYNTAX masque tous les autres types
     
+    # 2. LOGIC: Bugs fonctionnels (PRIORITÉ 2)
+    # Ne trigger que s'il y a des bugs ET pas d'autres problèmes dominants
+    if type_counts["bug"] > 0 and avg_score >= 4.0:
+        # Vérifier que ce ne sont pas juste des problèmes de documentation
+        if type_counts["documentation"] < total_problems * 0.7:  # Docs ≠ majorité
+            detected_types.append("LOGIC")
     
-    # Calculer les pourcentages
-    if total_problems > 0:
-        percentages = {k: (v / total_problems) * 100 for k, v in type_counts.items()}
-        
-        # DOCUMENTATION: Majorité de problèmes de documentation
-        if percentages["documentation"] > 50:
-            type.append("DOCUMENTATION")
-        
-        # NAMING: Majorité de problèmes de nommage
-        if percentages["naming"] > 50:
-            type.append("NAMING")
-        
-        # LOGIC: Majorité de bugs (non-syntax)
-        if percentages["bug"] > 40 and avg_score >= 4.0:
-            type.append("LOGIC")
+    # 3. DOCUMENTATION: Code fonctionne mais pas documenté (PRIORITÉ 3)
+    # Doit avoir AU MOINS des problèmes de documentation ET peu/pas de bugs
+    if type_counts["documentation"] > 0 and type_counts["bug"] == 0:
+        # Si documentation est le seul ou majoritaire problème
+        if type_counts["documentation"] >= total_problems * 0.5:
+            detected_types.append("DOCUMENTATION")
     
-    # MIXED: Aucun type ne domine clairement
-    return type
+    # 4. NAMING: Code fonctionne mais mal nommé (PRIORITÉ 4)
+    # Doit avoir des problèmes de nommage ET pas de bugs/docs manquantes
+    if type_counts["naming"] > 0:
+        # Ne ajouter NAMING que si:
+        # - Pas de bugs
+        # - Ou très peu de docs manquantes
+        if type_counts["bug"] == 0 and type_counts["documentation"] < total_problems * 0.5:
+            if type_counts["naming"] >= total_problems * 0.3:
+                detected_types.append("NAMING")
+    
+    # ============ FALLBACK: MIXED ============
+    if not detected_types:
+        # S'il y a des problèmes mais aucun type ne s'applique nettement
+        detected_types.append("MIXED")
+    
+    # ============ DÉDUPLICATIONS ET COHÉRENCE ============
+    # Supprimer les contradictions
+    if "CLEAN" in detected_types and len(detected_types) > 1:
+        detected_types.remove("CLEAN")
+    
+    # Si SYNTAX ou LOGIC détecté, supprimer les types cosmétiques
+    if "SYNTAX" in detected_types or "LOGIC" in detected_types:
+        if "DOCUMENTATION" in detected_types and type_counts["documentation"] < 3:
+            detected_types.remove("DOCUMENTATION")
+    
+    # Log debugging
+    print(f"  📊 Problèmes comptés: {type_counts}")
+    print(f"  📊 Sévérités: {severity_counts}")
+    print(f"  📊 Score pylint moyen: {avg_score:.2f}")
+    print(f"  📊 Types détectés: {detected_types}")
+    
+    return detected_types if detected_types else ["MIXED"]
 
 
 def auditor_agent(state: AgentState) -> AgentState:

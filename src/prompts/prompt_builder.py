@@ -80,27 +80,47 @@ class PromptBuilder:
         """
         system_prompt = self.context_mgr.get_system_prompt("fixer")
         
-        # Filtrer pour garder seulement problèmes critiques/majeurs
-        # (optimisation tokens)
-        
-        #help me out here, let him use the repo_type and fix_strategy to improve the filtering
-        
-        if repo_type and "SYNTAX" in repo_type:
-            problemes_prioritaires = [
-                p for p in problemes
-                if p.get("type") == "syntax_error"
-            ]
-        elif fix_strategy and fix_strategy.get("aggressive", False):
-            problemes_prioritaires = [
-                p for p in problemes
-                if p.get("severite") in ["critique", "majeur"]
-            ]
+        # Filtrer pour garder seulement problèmes critiques/majeurs (optimisation tokens)
+        if repo_type and fix_strategy:
+            if "SYNTAX" in repo_type:
+                # Pour SYNTAX: prioriser les erreurs de syntaxe pure
+                problemes_prioritaires = [
+                    p for p in problemes
+                    if p.get("type") in ["bug", "syntax_error"] and 
+                    any(kw in p.get("description", "").lower() 
+                        for kw in ["syntax", "import", "indentation", "name error", "undefined"])
+                ]
+            elif "LOGIC" in repo_type:
+                # Pour LOGIC: bugs + logique
+                problemes_prioritaires = [
+                    p for p in problemes
+                    if p.get("type") == "bug" or p.get("severite") in ["critique", "majeur"]
+                ]
+            elif "NAMING" in repo_type:
+                # Pour NAMING: prioriser les problèmes de nommage et lisibilité
+                problemes_prioritaires = [
+                    p for p in problemes
+                    if p.get("type") in ["naming", "pep8"] or p.get("severite") == "critique"
+                ]
+            elif "DOCUMENTATION" in repo_type:
+                # Pour DOCUMENTATION: documentation + bugs critiques
+                problemes_prioritaires = [
+                    p for p in problemes
+                    if p.get("type") == "documentation" or p.get("severite") == "critique"
+                ]
+            else:
+                # Par défaut: critiques et majeurs
+                problemes_prioritaires = [
+                    p for p in problemes
+                    if p.get("severite") in ["critique", "majeur"]
+                ]
         else:
+            # Sans contexte: critiques et majeurs
             problemes_prioritaires = [
                 p for p in problemes
                 if p.get("severite") in ["critique", "majeur"]
             ]
-        
+
         # Si aucun prioritaire, prendre tous (max 10 pour éviter saturation)
         if not problemes_prioritaires:
             problemes_prioritaires = problemes[:10] if len(problemes) > 10 else problemes
@@ -141,17 +161,19 @@ CODE CORRIGÉ DU FICHIER {nom_fichier}:
         self,
         resultats_tests: str,
         scores_pylint: Dict[str, float],
-        iteration: int
+        iteration: int,
+        repo_type: Optional[List[str]] = None  # ADD THIS PARAMETER
     ) -> Tuple[str, str]:
         """
         Construit le prompt pour l'agent testeur/juge.
         
-        Contexte résumé : logs tests (filtrés) + scores moyens.
+        Contexte résumé : logs tests (filtrés) + scores moyens + repo_type.
         
         Args:
             resultats_tests: Sortie de pytest
             scores_pylint: Dictionnaire {fichier: score}
             iteration: Numéro d'itération actuelle
+            repo_type: Liste des types de problèmes détectés (optionnel)
         
         Returns:
             (system_prompt, user_prompt)
@@ -177,8 +199,11 @@ CODE CORRIGÉ DU FICHIER {nom_fichier}:
         else:
             score_moyen = 0.0
         
-        # Construire user prompt
+        # Construire user prompt avec repo_type context
+        repo_type_str = f"Type(s) de problème détecté(s): {', '.join(repo_type)}\n" if repo_type else ""
+        
         user_prompt = f"ITÉRATION: {iteration}/10\n"
+        user_prompt += f"{repo_type_str}\n"  # ADD REPO_TYPE INFO
         user_prompt += f"\nRÉSULTATS TESTS:\n{resultats_tests}\n"
         user_prompt += f"\nSCORES PYLINT:\n"
         user_prompt += json.dumps(scores_pylint, indent=2)
