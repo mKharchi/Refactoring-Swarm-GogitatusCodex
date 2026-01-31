@@ -5,6 +5,7 @@ import google.generativeai as genai
 from dotenv import load_dotenv
 from google.api_core import exceptions
 
+from src import state
 from src.state import AgentState
 from src.utils.logger import log_experiment, ActionType
 from src.tools.tool_adapter import read_file, write_file
@@ -93,7 +94,51 @@ def fixer_agent(state: AgentState) -> AgentState:
         target_dir = state["target_dir"]
         python_files = state["python_files"]
         audit_report = state.get("audit_report", "")
-        
+        # ========== NOUVEAU CODE ==========
+# RÉCUPÉRER LE FEEDBACK DU JUDGE
+        test_output = state.get("test_output", "")
+        test_passed = state.get("test_passed", True)
+        iteration = state.get("iteration_count", 1)
+
+# Construire le contexte de feedback
+        feedback_context = ""
+
+        if iteration > 1 and test_output:
+    # Extraire seulement les lignes d'erreur
+            lignes_erreur = [
+                    ligne for ligne in test_output.split('\n')
+                    if any(mot in ligne for mot in [
+                                'FAILED', 'ERROR', 'AssertionError', 
+                                'TypeError', 'ValueError', 'NameError',
+                                'File "', 'line ', '>>>'
+                            ])
+                    ]
+    
+            if lignes_erreur:
+                feedback_context = f"""
+╔══════════════════════════════════════════════════════════════════╗
+║ ⚠️  ATTENTION - ITÉRATION {iteration}                                 ║
+║ Les tests ont ÉCHOUÉ. Voici les erreurs PRÉCISES à corriger :    ║
+╚══════════════════════════════════════════════════════════════════╝
+
+ERREURS DE TESTS DÉTECTÉES :
+{chr(10).join(lignes_erreur[:20])}
+
+INSTRUCTIONS CRITIQUES POUR CETTE ITÉRATION :
+1. 🎯 Analyse PRÉCISÉMENT ces erreurs (nom de fonction, ligne, type d'erreur)
+2. 🚫 NE réécris PAS le code à l'identique - ça ne fonctionnera pas
+3. 🔍 Concentre-toi sur les fonctions mentionnées dans les erreurs
+4. ✅ Garde les parties du code qui fonctionnent déjà
+5. 🧪 Assure-toi que les corrections résolvent les AssertionError
+"""
+            else:
+                feedback_context = f"""
+ITÉRATION {iteration} : Tests partiellement réussis.
+Continue d'améliorer le code en te basant sur le rapport d'audit.
+"""
+
+        print(f"  📋 Feedback tests : {len(feedback_context)} caractères")
+# ========== FIN DU NOUVEAU CODE ==========
         if not audit_report:
             print("⚠️  Aucun rapport d'audit trouvé")
             state["changes_made"] = ["Aucun rapport d'audit disponible"]
@@ -123,25 +168,23 @@ def fixer_agent(state: AgentState) -> AgentState:
             if USE_PROMPT_BUILDER:
                 print("  📝 Utilisation du prompt builder optimisé")
                 
-                # Parse audit report to extract problems for this file
                 problemes_fichier = extraire_problemes_fichier(audit_report, filepath)
                 
                 system_prompt, user_prompt = prompt_builder.construire_prompt_correcteur(
-                    code_source=original_code,
-                    problemes=problemes_fichier,
-                    nom_fichier=filepath
-                )
-                full_prompt = f"{system_prompt}\n\n{user_prompt}"
-                
-                # Analyze and log prompt cost
-                cout = prompt_builder.analyser_couts(system_prompt, user_prompt, "Fixer")
-                print(f"  💰 Tokens estimés: ~{cout.get('tokens_total_input', 0)} entrée")
+        code_source=original_code,
+        problemes=problemes_fichier,
+        nom_fichier=filepath,
+        feedback_tests=feedback_context
+    )
+                full_prompt = system_prompt + "\n\n" + user_prompt
+
             else:
-                # Fallback to simple prompt
                 print("  ⚠️  Utilisation du prompt simple (fallback)")
                 full_prompt = f"""Tu es un expert Python. Ton rôle est de corriger et améliorer du code Python.
 
 FICHIER: {filepath}
+
+{feedback_context}  # ← AJOUTER CETTE LIGNE
 
 CODE ORIGINAL À CORRIGER:
 {original_code}
