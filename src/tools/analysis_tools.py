@@ -1,6 +1,6 @@
 import re
 import subprocess
-
+import sys
 
 
 
@@ -49,8 +49,9 @@ def parse_pylint_messages(stdout: str) -> dict:
 
 def run_pylint(filepath:str) -> dict:
     try:
+        # always invoke via the same Python interpreter to ensure the module exists
         result = subprocess.run(
-            ["pylint", filepath , "--output-format=text"],
+            [sys.executable, "-m", "pylint", filepath, "--output-format=text"],
             capture_output=True,
             text=True,
             timeout=30

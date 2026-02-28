@@ -4,6 +4,7 @@ TEMPORARY - À remplacer par le Toolsmith dans 2 jours.
 """
 import os
 import subprocess
+import sys
 import tempfile
 from typing import Dict, Optional
 
@@ -75,8 +76,9 @@ def run_pytest(test_file_path: str, code_files: list = None) -> Dict:
             }
         
         # Exécuter pytest
+        # invoke pytest through the current Python interpreter to guarantee availability
         result = subprocess.run(
-            ['pytest', test_file_path, '-v', '--tb=short'],
+            [sys.executable, '-m', 'pytest', test_file_path, '-v', '--tb=short'],
             capture_output=True,
             text=True,
             timeout=30  # Timeout de 30 secondes
